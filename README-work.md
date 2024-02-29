@@ -175,9 +175,9 @@ The package provides a Command Line Interface (CLI) script:
 llamafile-playground --help
 ```
 
-**Remark:** When the authorization key argument "auth-key" is specified set to "Whatever"
-then `llamafile-playground` attempts to use the env variable `LLAMAFILE_API_KEY`.
-
+**Remark:** When the authorization key, `auth-key`, is specified to be `Whatever`
+then it is assigned the string `sk-no-key-required`.
+If an authorization key is required then the env variable `LLAMAFILE_API_KEY` can be also used.
 
 --------
 
@@ -188,9 +188,9 @@ The following flowchart corresponds to the steps in the package function `llamaf
 ```mermaid
 graph TD
 	UI[/Some natural language text/]
-	TO[/"MistralAI<br/>Processed output"/]
+	TO[/"llamafile<br/>Processed output"/]
 	WR[[Web request]]
-	MistralAI{{https://console.mistral.ai}}
+	llamafile{{http://127.0.0.1:8080/v1}}
 	PJ[Parse JSON]
 	Q{Return<br>hash?}
 	MSTC[Compose query]
@@ -199,7 +199,7 @@ graph TD
 	QAK{Auth key<br>supplied?}
 	EAK[["Try to find<br>LLAMAFILE_API_KEY<br>in %*ENV"]]
 	QEAF{Auth key<br>found?}
-	NAK[/Cannot find auth key/]
+	NAK[["Use 'sk-no-key-required'"]]
 	UI --> QAK
 	QAK --> |yes|MSTC
 	QAK --> |no|EAK
@@ -208,8 +208,8 @@ graph TD
 	QEAF --> |no|NAK
 	QEAF --> |yes|TTC
 	TTC -.-> MURL -.-> WR -.-> TTC
-	WR -.-> |URL|MistralAI 
-	MistralAI -.-> |JSON|WR
+	WR -.-> |URL|llamafile 
+	llamafile -.-> |JSON|WR
 	TTC --> Q 
 	Q --> |yes|PJ
 	Q --> |no|TO
