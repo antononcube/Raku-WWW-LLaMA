@@ -1,4 +1,4 @@
-unit module WWW::LlamaFile::Request;
+unit module WWW::LLaMA::Request;
 
 use JSON::Fast;
 use HTTP::Tiny;
@@ -104,8 +104,8 @@ multi sub curl-post(Str :$url!,
 # Request
 #============================================================
 
-#| MistralAI request access.
-our proto llamafile-request(Str :$url!,
+#| LLaMA request access.
+our proto llama-request(Str :$url!,
                             :$body!,
                             :api-key(:$auth-key) is copy = Whatever,
                             UInt :$timeout= 10,
@@ -113,8 +113,8 @@ our proto llamafile-request(Str :$url!,
                             Str :$method = 'tiny',
                             ) is export {*}
 
-#| MistralAI request access.
-multi sub llamafile-request(Str :$url!,
+#| LLaMA request access.
+multi sub llama-request(Str :$url!,
                             :$body!,
                             :api-key(:$auth-key) is copy = Whatever,
                             UInt :$timeout= 10,
@@ -139,13 +139,13 @@ multi sub llamafile-request(Str :$url!,
     # Process $auth-key
     #------------------------------------------------------
     if $auth-key.isa(Whatever) {
-        if %*ENV<LLAMAFILE_API_KEY>:exists {
-            $auth-key = %*ENV<LLAMAFILE_API_KEY>;
+        if %*ENV<LLAMA_API_KEY>:exists {
+            $auth-key = %*ENV<LLAMA_API_KEY>;
         } else {
             $auth-key = "sk-no-key-required";
 #            fail %( error => %(
 #                message => 'Cannot find llamafile authorization key. ' ~
-#                        'Please provide a valid key to the argument auth-key, or set the ENV variable LLAMAFILE_API_KEY.',
+#                        'Please provide a valid key to the argument auth-key, or set the ENV variable LLAMA_API_KEY.',
 #                code => 401, status => 'NO_API_KEY'));
         }
     }
@@ -153,7 +153,7 @@ multi sub llamafile-request(Str :$url!,
     unless $auth-key ~~ Str;
 
     #------------------------------------------------------
-    # Invoke MistralAI service
+    # Invoke LLaMA service
     #------------------------------------------------------
     my $res = do given $method.lc {
         when 'curl' {

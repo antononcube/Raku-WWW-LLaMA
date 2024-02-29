@@ -33,7 +33,7 @@ zef install WWW::LLaMA
 To install the package from the GitHub repository use the shell command:
 
 ```
-zef install https://github.com/antononcube/Raku-WWW-LlamaFile.git
+zef install https://github.com/antononcube/Raku-WWW-LLaMA.git
 ```
 
 ----
@@ -52,7 +52,7 @@ The package has an universal "front-end" function `llama-playground` for the
 Here is a simple call for a "chat completion":
 
 ```perl6
-use LLaMA;
+use WWW::LLaMA;
 llama-playground('Where is Roger Rabbit?');
 ```
 
@@ -188,9 +188,9 @@ The following flowchart corresponds to the steps in the package function `llama-
 ```mermaid
 graph TD
 	UI[/Some natural language text/]
-	TO[/"llamafile<br/>Processed output"/]
+	TO[/"LLaMA<br/>Processed output"/]
 	WR[[Web request]]
-	llamafile{{http://127.0.0.1:8080/v1}}
+	LLaMA{{http://127.0.0.1:8080/v1}}
 	PJ[Parse JSON]
 	Q{Return<br>hash?}
 	MSTC[Compose query]
@@ -208,8 +208,8 @@ graph TD
 	QEAF --> |no|NAK
 	QEAF --> |yes|TTC
 	TTC -.-> MURL -.-> WR -.-> TTC
-	WR -.-> |URL|llamafile 
-	llamafile -.-> |JSON|WR
+	WR -.-> |URL|LLaMA 
+	LLaMA -.-> |JSON|WR
 	TTC --> Q 
 	Q --> |yes|PJ
 	Q --> |no|TO

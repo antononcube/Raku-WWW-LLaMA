@@ -1,8 +1,8 @@
-unit module WWW::LlamaFile::Models;
+unit module WWW::LLaMA::Models;
 
 use HTTP::Tiny;
 use JSON::Fast;
-use WWW::LlamaFile::Request;
+use WWW::LLaMA::Request;
 
 
 #============================================================
@@ -13,7 +13,7 @@ use WWW::LlamaFile::Request;
 my $knownModels = Set.new(<mistral-tiny mistral-small mistral-medium mistral-embed>);
 
 
-our sub llamafile-known-models() is export {
+our sub llama-known-models() is export {
     return $knownModels;
 }
 
@@ -28,21 +28,21 @@ my %endPointToModels =
         'chat/completions' => <mistral-tiny mistral-small mistral-medium>;
 
 #| End-point to models retrieval.
-proto sub llamafile-end-point-to-models(|) is export {*}
+proto sub llama-end-point-to-models(|) is export {*}
 
-multi sub llamafile-end-point-to-models() {
+multi sub llama-end-point-to-models() {
     return %endPointToModels;
 }
 
-multi sub llamafile-end-point-to-models(Str $endPoint) {
+multi sub llama-end-point-to-models(Str $endPoint) {
     return %endPointToModels{$endPoint};
 }
 
 #| Checks if a given string an identifier of a chat completion model.
-proto sub llamafile-is-chat-completion-model($model) is export {*}
+proto sub llama-is-chat-completion-model($model) is export {*}
 
-multi sub llamafile-is-chat-completion-model(Str $model) {
-    return $model ∈ llamafile-end-point-to-models{'generateMessage'};
+multi sub llama-is-chat-completion-model(Str $model) {
+    return $model ∈ llama-end-point-to-models{'generateMessage'};
 }
 
 #------------------------------------------------------------
@@ -51,13 +51,13 @@ multi sub llamafile-is-chat-completion-model(Str $model) {
 my %modelToEndPoints = %endPointToModels.map({ $_.value.Array X=> $_.key }).flat.classify({ $_.key }).map({ $_.key => $_.value>>.value.Array });
 
 #| Model to end-points retrieval.
-proto sub llamafile-model-to-end-points(|) is export {*}
+proto sub llama-model-to-end-points(|) is export {*}
 
-multi sub llamafile-model-to-end-points() {
+multi sub llama-model-to-end-points() {
     return %modelToEndPoints;
 }
 
-multi sub llamafile-model-to-end-points(Str $model) {
+multi sub llama-model-to-end-points(Str $model) {
     return %modelToEndPoints{$model};
 }
 
@@ -65,8 +65,8 @@ multi sub llamafile-model-to-end-points(Str $model) {
 # Models
 #============================================================
 
-#| MistralAI models.
-our sub LlamaFileModels(
+#| LLaMA models.
+our sub LLaMAModels(
         :$format is copy = Whatever,
         Str :$method = 'tiny',
         Str :$base-url = 'http://127.0.0.1:8080/v1',
@@ -77,11 +77,11 @@ our sub LlamaFileModels(
     #------------------------------------------------------
     # This code is repeated in other files.
     if $auth-key.isa(Whatever) {
-        if %*ENV<LLAMAFILE_API_KEY>:exists {
-            $auth-key = %*ENV<LLAMAFILE_API_KEY>;
+        if %*ENV<LLAMA_API_KEY>:exists {
+            $auth-key = %*ENV<LLAMA_API_KEY>;
         } else {
             note 'Cannot find Mistral.AI authorization key. ' ~
-                    'Please provide a valid key to the argument auth-key, or set the ENV variable LLAMAFILE_API_KEY.';
+                    'Please provide a valid key to the argument auth-key, or set the ENV variable LLAMA_API_KEY.';
             $auth-key = ''
         }
     }
@@ -91,7 +91,7 @@ our sub LlamaFileModels(
     #------------------------------------------------------
     # Retrieve
     #------------------------------------------------------
-    my Str $url = $base-url ~ '/v1/models';
+    my Str $url = $base-url ~ '/models';
 
-    return llamafile-request(:$url, body => '', :$auth-key, :$timeout, :$format, :$method);
+    return llama-request(:$url, body => '', :$auth-key, :$timeout, :$format, :$method);
 }

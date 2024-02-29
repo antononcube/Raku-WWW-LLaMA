@@ -1,42 +1,42 @@
 
-unit module WWW::LlamaFile::Embeddings;
+unit module WWW::LLaMA::Embeddings;
 
-use WWW::LlamaFile::Models;
-use WWW::LlamaFile::Request;
+use WWW::LLaMA::Models;
+use WWW::LLaMA::Request;
 use JSON::Fast;
 
 #============================================================
 # Embeddings
 #============================================================
 
-#| MistralAI embeddings.
-our proto LlamaFileEmbeddings($prompt,
-                              :$model = Whatever,
-                              :$encoding-format = Whatever,
-                              :api-key(:$auth-key) is copy = Whatever,
-                              UInt :$timeout= 10,
-                              :$format is copy = Whatever,
-                              Str :$method = 'tiny',
-                              Str :$base-url = 'http://127.0.0.1:8080/v1'
-                              ) is export {*}
+#| LLaMA embeddings.
+our proto LLaMAEmbeddings($prompt,
+                          :$model = Whatever,
+                          :$encoding-format = Whatever,
+                          :api-key(:$auth-key) is copy = Whatever,
+                          UInt :$timeout= 10,
+                          :$format is copy = Whatever,
+                          Str :$method = 'tiny',
+                          Str :$base-url = 'http://127.0.0.1:8080/v1'
+                          ) is export {*}
 
 
-#| MistralAI embeddings.
-multi sub LlamaFileEmbeddings($prompt,
-                              :$model is copy = Whatever,
-                              :$encoding-format is copy = Whatever,
-                              :api-key(:$auth-key) is copy = Whatever,
-                              UInt :$timeout= 10,
-                              :$format is copy = Whatever,
-                              Str :$method = 'tiny',
-                              Str :$base-url = 'http://127.0.0.1:8080/v1') {
+#| LLaMA embeddings.
+multi sub LLaMAEmbeddings($prompt,
+                          :$model is copy = Whatever,
+                          :$encoding-format is copy = Whatever,
+                          :api-key(:$auth-key) is copy = Whatever,
+                          UInt :$timeout= 10,
+                          :$format is copy = Whatever,
+                          Str :$method = 'tiny',
+                          Str :$base-url = 'http://127.0.0.1:8080/v1') {
 
     #------------------------------------------------------
     # Process $model
     #------------------------------------------------------
     if $model.isa(Whatever) { $model = 'mistral-embed'; }
-    die "The argument \$model is expected to be Whatever or one of the strings: { '"' ~ llamafile-known-models.keys.sort.join('", "') ~ '"' }."
-    unless $model ∈ llamafile-known-models;
+    die "The argument \$model is expected to be Whatever or one of the strings: { '"' ~ llama-known-models.keys.sort.join('", "') ~ '"' }."
+    unless $model ∈ llama-known-models;
 
     #------------------------------------------------------
     # Process $encoding-format
@@ -46,7 +46,7 @@ multi sub LlamaFileEmbeddings($prompt,
     unless $encoding-format ~~ Str && $encoding-format.lc ∈ <float base64>;
 
     #------------------------------------------------------
-    # MistralAI URL
+    # LLaMA URL
     #------------------------------------------------------
 
     my $url = $base-url ~ '/v1/embeddings';
@@ -56,13 +56,13 @@ multi sub LlamaFileEmbeddings($prompt,
     #------------------------------------------------------
     if ($prompt ~~ Positional || $prompt ~~ Seq) && $method ∈ <tiny> {
 
-        return llamafile-request(:$url,
+        return llama-request(:$url,
                 body => to-json({ input => $prompt.Array, :$model, encoding_format => $encoding-format }),
                 :$auth-key, :$timeout, :$format, :$method);
 
     } else {
 
-        return llamafile-request(:$url,
+        return llama-request(:$url,
                 body => to-json({ input => $prompt.Array, :$model, encoding_format => $encoding-format }),
                 :$auth-key, :$timeout, :$format, :$method);
     }

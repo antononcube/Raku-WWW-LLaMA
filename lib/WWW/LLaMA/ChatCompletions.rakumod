@@ -1,7 +1,7 @@
-unit module WWW::LlamaFile::ChatCompletions;
+unit module WWW::LLaMA::ChatCompletions;
 
-use WWW::LlamaFile::Models;
-use WWW::LlamaFile::Request;
+use WWW::LLaMA::Models;
+use WWW::LLaMA::Request;
 use JSON::Fast;
 
 #============================================================
@@ -19,40 +19,40 @@ my $knownRoles = Set.new(<user assistant>);
 # https://docs.mistral.ai/api/#operation/createChatCompletion
 
 
-#| MistralAI completion access.
-our proto LlamaFileChatCompletion($prompt is copy,
-                                  :$role is copy = Whatever,
-                                  :$model is copy = Whatever,
-                                  :$temperature is copy = Whatever,
-                                  :$max-tokens is copy = Whatever,
-                                  Numeric :$top-p = 1,
-                                  Bool :$stream = False,
-                                  :$random-seed is copy = Whatever,
-                                  :api-key(:$auth-key) is copy = Whatever,
-                                  UInt :$timeout= 10,
-                                  :$format is copy = Whatever,
-                                  Str :$method = 'tiny',
-                                  Str :$base-url = 'http://127.0.0.1:8080/v1') is export {*}
+#| LLaMA completion access.
+our proto LLaMAChatCompletion($prompt is copy,
+                              :$role is copy = Whatever,
+                              :$model is copy = Whatever,
+                              :$temperature is copy = Whatever,
+                              :$max-tokens is copy = Whatever,
+                              Numeric :$top-p = 1,
+                              Bool :$stream = False,
+                              :$random-seed is copy = Whatever,
+                              :api-key(:$auth-key) is copy = Whatever,
+                              UInt :$timeout= 10,
+                              :$format is copy = Whatever,
+                              Str :$method = 'tiny',
+                              Str :$base-url = 'http://127.0.0.1:8080/v1') is export {*}
 
-#| MistralAI completion access.
-multi sub LlamaFileChatCompletion(Str $prompt, *%args) {
-    return LlamaFileChatCompletion([$prompt,], |%args);
+#| LLaMA completion access.
+multi sub LLaMAChatCompletion(Str $prompt, *%args) {
+    return LLaMAChatCompletion([$prompt,], |%args);
 }
 
-#| MistralAI completion access.
-multi sub LlamaFileChatCompletion(@prompts is copy,
-                                  :$role is copy = Whatever,
-                                  :$model is copy = Whatever,
-                                  :$temperature is copy = Whatever,
-                                  :$max-tokens is copy = Whatever,
-                                  Numeric :$top-p = 1,
-                                  Bool :$stream = False,
-                                  :$random-seed is copy = Whatever,
-                                  :api-key(:$auth-key) is copy = Whatever,
-                                  UInt :$timeout= 10,
-                                  :$format is copy = Whatever,
-                                  Str :$method = 'tiny',
-                                  Str :$base-url = 'http://127.0.0.1:8080/v1') {
+#| LLaMA completion access.
+multi sub LLaMAChatCompletion(@prompts is copy,
+                              :$role is copy = Whatever,
+                              :$model is copy = Whatever,
+                              :$temperature is copy = Whatever,
+                              :$max-tokens is copy = Whatever,
+                              Numeric :$top-p = 1,
+                              Bool :$stream = False,
+                              :$random-seed is copy = Whatever,
+                              :api-key(:$auth-key) is copy = Whatever,
+                              UInt :$timeout= 10,
+                              :$format is copy = Whatever,
+                              Str :$method = 'tiny',
+                              Str :$base-url = 'http://127.0.0.1:8080/v1') {
 
     #------------------------------------------------------
     # Process $role
@@ -65,8 +65,8 @@ multi sub LlamaFileChatCompletion(@prompts is copy,
     # Process $model
     #------------------------------------------------------
     if $model.isa(Whatever) { $model = 'mistral-tiny'; }
-    die "The argument \$model is expected to be Whatever or one of the strings: { '"' ~ llamafile-known-models.keys.sort.join('", "') ~ '"' }."
-    unless $model ∈ llamafile-known-models;
+    die "The argument \$model is expected to be Whatever or one of the strings: { '"' ~ llama-known-models.keys.sort.join('", "') ~ '"' }."
+    unless $model ∈ llama-known-models;
 
     #------------------------------------------------------
     # Process $temperature
@@ -113,7 +113,7 @@ multi sub LlamaFileChatCompletion(@prompts is copy,
     });
 
     #------------------------------------------------------
-    # Make MistralAI URL
+    # Make LLaMA URL
     #------------------------------------------------------
 
     my %body = :$model, :$temperature, :$stream,
@@ -131,5 +131,5 @@ multi sub LlamaFileChatCompletion(@prompts is copy,
     # Delegate
     #------------------------------------------------------
 
-    return llamafile-request(:$url, body => to-json(%body), :$auth-key, :$timeout, :$format, :$method);
+    return llama-request(:$url, body => to-json(%body), :$auth-key, :$timeout, :$format, :$method);
 }

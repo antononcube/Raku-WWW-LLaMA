@@ -3,7 +3,7 @@ use v6.d;
 use lib '.';
 use lib './lib';
 
-use LLaMA;
+use WWW::LLaMA;
 use Test;
 
 my $method = 'tiny';

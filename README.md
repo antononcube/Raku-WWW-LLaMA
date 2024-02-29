@@ -33,7 +33,7 @@ zef install WWW::LLaMA
 To install the package from the GitHub repository use the shell command:
 
 ```
-zef install https://github.com/antononcube/Raku-WWW-LlamaFile.git
+zef install https://github.com/antononcube/Raku-WWW-LLaMA.git
 ```
 
 ----
@@ -52,11 +52,12 @@ The package has an universal "front-end" function `llama-playground` for the
 Here is a simple call for a "chat completion":
 
 ```perl6
-use LLaMA;
+use WWW::LLaMA;
 llama-playground('Where is Roger Rabbit?');
 ```
 ```
-# [{finish_reason => stop, index => 0, message => {content => Roger Rabbit is a fictional character from the popular 1988 animated/live-action film "Who Framed Roger Rabbit." He's a cartoon rabbit with human-like features and behaviors. If you're asking where he can be found in real life, I regret, role => assistant}}]
+# [{finish_reason => stop, index => 0, message => {content => Roger Rabbit is a fictional character from the 1988 live-action/animated film "Who Framed Roger Rabbit." He is a cartoon rabbit who lives in Toon Town, a magical place where animated characters can exist in the human world.
+# <|im_, role => assistant}}]
 ```
 
 Another one using Bulgarian:
@@ -65,11 +66,11 @@ Another one using Bulgarian:
 llama-playground('Колко групи могат да се намерят в този облак от точки.', max-tokens => 300, random-seed => 234232, format => 'values');
 ```
 ```
-# За да определим броя на групите от точки в образец, ние трябва да приложим метод на кликенгъс (cluster analysis). Той е метод за групиране на данни, които се приближават помежду си повече отколкото до други данни. В случая с вашите точки, ние трябва да определим дистанцията между всяка двойка точки и след това да намерим границата на разстоянията, които дефинират една група от точките.
+# За да определим бройката на групите от точки в даден облак, ще трябва да използваме метод за клистерно агломериране. Този метод обединява точките в групи, когато разстоянието между две спредишни групи е по-голямо от определен радиус (разстоянието между двата най-близоразни елемента в двете групи).
 # 
-# Въпреки че можем да използваме различни методи за кластерно анализ, един популярен метод е DBSCAN (Density-Based Spatial Clustering of Applications with Noise). Този метод изисква два параметъра - ε (eps) и минимална гъстота на точките в група.
+# Съжалявам, че не мога да предложа задачата да бъде решена директно с помощта на Python код, тъй като нямам информация за координатите на точките в облака. Можеш ли да ми послужи с тази информация, за да те предоставям решението?
 # 
-# Получаването на резултати от DBSCAN могат да варират в зависимост от избраните стойности на тези параметри, но ще можем да получим идея за броя
+# Разгледайки въпроса от математическа перспектива, можеш да използвайте алгоритъм на Хаусдорф за намиране на максимална покриваща група от точки в облака. Този алгоритъм е сложен и изисква значител
 ```
 
 **Remark:** The functions `llama-chat-completion` or `llama-completion` can be used instead in the examples above.
@@ -84,10 +85,8 @@ The current MistralAI models can be found with the function `llama-models`:
 *<id>.say for |llama-models;
 ```
 ```
-#ERROR: Type Str does not support associative indexing.
 #ERROR: Cannot find Mistral.AI authorization key. Please provide a valid key to the argument auth-key, or set the ENV variable LLAMA_API_KEY.
-#ERROR: Cannot convert from JSON, returning "asis".
-# Nil
+# mistral-7b-instruct-v0.2.Q5_K_M.gguf
 ```
 
 ### Code generation
@@ -103,16 +102,13 @@ llama-completion(
 ```
 ```
 # Here's a simple example of how to loop over a list in Raku:
-# 
 # ```raku
-# my @list = (1, 2, 3, 4, 5); # Define a list
-# 
-# for my $item (@list) {
-#     say $item; # Print each item in the list
+# my @list = (1, 2, 3, 4, 5); # Define the list
+# for ^@list -> $item { # Use a for loop to iterate over each item in the list
+#     say "Item: ", $item; # Perform some action with each item
 # }
 # ```
-# 
-# In this code snippet, we first define a list `@list` with some elements. Then, we use a `for` loop to iterate over each item in the list. The variable `$item
+# In this example, `^@list` is a slice that generates indices for all items in the list `@list`. The loop
 ```
 
 Here is a chat completion:
@@ -124,17 +120,17 @@ llama-completion(
         format => 'values');
 ```
 ```
-# To loop over a list in Raku, you can use the `for` loop with the `Xs` protocol which is available for collections like lists. Here's a simple example:
+# To create a loop over a list in Raku, you can use the `for` statement with an index and a list. Here's a simple example:
 # 
 # ```raku
-# my @numbers = (1, 2, 3, 4, 5); # This is a list of numbers.
-# 
-# for my $number (@numbers) {
-#     say "Number: ", $number;
+# my @numbers = (1, 2, 3, 4, 5);
+# for my $index (0..^$numbers.elems) {
+#     my $number = $numbers[$index];
+#     say "Index: $index, Value: $number";
 # }
 # ```
 # 
-# In this example, we create a list `@numbers` containing some numbers. We
+# In this example, `@numbers` is
 ```
 
 
@@ -226,7 +222,9 @@ Here is an example of chat completion with emojification:
 llama-chat-completion([ system => $preEmojify, user => 'Python sucks, Raku rocks, and Perl is annoying'], max-tokens => 200, format => 'values')
 ```
 ```
-# Python 🐍 is meh, Raku 🚀 is awesome, and Perl 🐘 can be irritating
+# 😕 Python, 😢
+# 😍 Raku,
+# 🤔 Perl, 🤨🙈
 ```
 
 -------
@@ -254,7 +252,7 @@ llama-playground --help
 #     --timeout[=UInt]            Timeout. [default: 10]
 #     -f|--format=<Str>           Format of the result; one of "json", "hash", "values", or "Whatever". [default: 'Whatever']
 #     --method=<Str>              Method for the HTTP POST query; one of "tiny" or "curl". [default: 'tiny']
-#     --base-url=<Str>            Base URL of the llamafile server. [default: 'http://127.0.0.1:80…']
+#     --base-url=<Str>            Base URL of the LLaMA server. [default: 'http://127.0.0.1:80…']
 ```
 
 **Remark:** When the authorization key, `auth-key`, is specified to be `Whatever`
@@ -270,9 +268,9 @@ The following flowchart corresponds to the steps in the package function `llama-
 ```mermaid
 graph TD
 	UI[/Some natural language text/]
-	TO[/"llamafile<br/>Processed output"/]
+	TO[/"LLaMA<br/>Processed output"/]
 	WR[[Web request]]
-	llamafile{{http://127.0.0.1:8080/v1}}
+	LLaMA{{http://127.0.0.1:8080/v1}}
 	PJ[Parse JSON]
 	Q{Return<br>hash?}
 	MSTC[Compose query]
@@ -290,8 +288,8 @@ graph TD
 	QEAF --> |no|NAK
 	QEAF --> |yes|TTC
 	TTC -.-> MURL -.-> WR -.-> TTC
-	WR -.-> |URL|llamafile 
-	llamafile -.-> |JSON|WR
+	WR -.-> |URL|LLaMA 
+	LLaMA -.-> |JSON|WR
 	TTC --> Q 
 	Q --> |yes|PJ
 	Q --> |no|TO
