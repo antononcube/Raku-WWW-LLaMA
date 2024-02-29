@@ -1,0 +1,135 @@
+unit module WWW::LlamaFile::ChatCompletions;
+
+use WWW::LlamaFile::Models;
+use WWW::LlamaFile::Request;
+use JSON::Fast;
+
+#============================================================
+# Known roles
+#============================================================
+
+my $knownRoles = Set.new(<user assistant>);
+
+
+#============================================================
+# Completions
+#============================================================
+
+# In order to understand the design of [role => message,] argument see:
+# https://docs.mistral.ai/api/#operation/createChatCompletion
+
+
+#| MistralAI completion access.
+our proto LlamaFileChatCompletion($prompt is copy,
+                                  :$role is copy = Whatever,
+                                  :$model is copy = Whatever,
+                                  :$temperature is copy = Whatever,
+                                  :$max-tokens is copy = Whatever,
+                                  Numeric :$top-p = 1,
+                                  Bool :$stream = False,
+                                  :$random-seed is copy = Whatever,
+                                  :api-key(:$auth-key) is copy = Whatever,
+                                  UInt :$timeout= 10,
+                                  :$format is copy = Whatever,
+                                  Str :$method = 'tiny',
+                                  Str :$base-url = 'http://127.0.0.1:8080/v1') is export {*}
+
+#| MistralAI completion access.
+multi sub LlamaFileChatCompletion(Str $prompt, *%args) {
+    return LlamaFileChatCompletion([$prompt,], |%args);
+}
+
+#| MistralAI completion access.
+multi sub LlamaFileChatCompletion(@prompts is copy,
+                                  :$role is copy = Whatever,
+                                  :$model is copy = Whatever,
+                                  :$temperature is copy = Whatever,
+                                  :$max-tokens is copy = Whatever,
+                                  Numeric :$top-p = 1,
+                                  Bool :$stream = False,
+                                  :$random-seed is copy = Whatever,
+                                  :api-key(:$auth-key) is copy = Whatever,
+                                  UInt :$timeout= 10,
+                                  :$format is copy = Whatever,
+                                  Str :$method = 'tiny',
+                                  Str :$base-url = 'http://127.0.0.1:8080/v1') {
+
+    #------------------------------------------------------
+    # Process $role
+    #------------------------------------------------------
+    if $role.isa(Whatever) { $role = "user"; }
+    die "The argument \$role is expected to be Whatever or one of the strings: { '"' ~ $knownRoles.keys.sort.join('", "') ~ '"' }."
+    unless $role ∈ $knownRoles;
+
+    #------------------------------------------------------
+    # Process $model
+    #------------------------------------------------------
+    if $model.isa(Whatever) { $model = 'mistral-tiny'; }
+    die "The argument \$model is expected to be Whatever or one of the strings: { '"' ~ llamafile-known-models.keys.sort.join('", "') ~ '"' }."
+    unless $model ∈ llamafile-known-models;
+
+    #------------------------------------------------------
+    # Process $temperature
+    #------------------------------------------------------
+    if $temperature.isa(Whatever) { $temperature = 0.7; }
+    die "The argument \$temperature is expected to be Whatever or number between 0 and 2."
+    unless $temperature ~~ Numeric && 0 ≤ $temperature ≤ 1;
+
+    #------------------------------------------------------
+    # Process $max-tokens
+    #------------------------------------------------------
+    if $max-tokens.isa(Whatever) { $max-tokens = 64; }
+    die "The argument \$max-tokens is expected to be Whatever or a positive integer."
+    unless $max-tokens ~~ Int && 0 < $max-tokens;
+
+    #------------------------------------------------------
+    # Process $top-p
+    #------------------------------------------------------
+    if $top-p.isa(Whatever) { $top-p = 1.0; }
+    die "The argument \$top-p is expected to be Whatever or number between 0 and 1."
+    unless $top-p ~~ Numeric && 0 ≤ $top-p ≤ 1;
+
+    #------------------------------------------------------
+    # Process $stream
+    #------------------------------------------------------
+    die "The argument \$stream is expected to be Boolean."
+    unless $stream ~~ Bool;
+
+    #------------------------------------------------------
+    # Process $random-seed
+    #------------------------------------------------------
+    die "The argument \$random-seed is expected to be a integer or Whatever."
+    unless $random-seed.isa(Whatever) || $random-seed ~~ Int;
+
+    #------------------------------------------------------
+    # Messages
+    #------------------------------------------------------
+    my @messages = @prompts.map({
+        if $_ ~~ Pair {
+            %(role => $_.key, content => $_.value)
+        } else {
+            %(:$role, content => $_)
+        }
+    });
+
+    #------------------------------------------------------
+    # Make MistralAI URL
+    #------------------------------------------------------
+
+    my %body = :$model, :$temperature, :$stream,
+               top_p => $top-p,
+               :@messages,
+               max_tokens => $max-tokens;
+
+    if $random-seed ~~ Int:D {
+        %body.push('random_seed' => $random-seed);
+    }
+
+    my $url = $base-url ~ '/chat/completions';
+
+    #------------------------------------------------------
+    # Delegate
+    #------------------------------------------------------
+
+    return llamafile-request(:$url, body => to-json(%body), :$auth-key, :$timeout, :$format, :$method);
+}

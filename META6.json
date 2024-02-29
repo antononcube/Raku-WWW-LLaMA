@@ -1,0 +1,42 @@
+{
+  "name": "WWW::LlamaFile",
+  "description": "WWW::LlamaFile provides access to the llamafile playground.",
+  "version": "0.1.0",
+  "perl": "6.d",
+  "authors": [
+    "Anton Antonov"
+  ],
+  "auth": "zef:antononcube",
+  "depends": [
+    "HTTP::Tiny:ver<0.2.5+>",
+    "JSON::Fast:ver<0.17+>",
+    "IO::Socket::SSL:ver<0.0.2+>"
+  ],
+  "build-depends": [],
+  "test-depends": [],
+  "provides": {
+    "WWW::LlamaFile": "lib/WWW/LlamaFile.rakumod",
+    "WWW::LlamaFile::ChatCompletions": "lib/WWW/LlamaFile/ChatCompletions.rakumod",
+    "WWW::LlamaFile::Embeddings": "lib/WWW/LlamaFile/Embeddings.rakumod",
+    "WWW::LlamaFile::Models": "lib/WWW/LlamaFile/Models.rakumod",
+    "WWW::LlamaFile::Request": "lib/WWW/LlamaFile/Request.rakumod"
+  },
+  "resources": [],
+  "license": "Artistic-2.0",
+  "tags": [
+    "ai",
+    "api",
+    "art",
+    "embeddings",
+    "generative art",
+    "generative",
+    "large language model",
+    "llm",
+    "llama",
+    "llamafile",
+    "web service",
+    "web"
+  ],
+  "api": "1",
+  "source-url": "https://github.com/antononcube/Raku-WWW-LlamaFile"
+}
