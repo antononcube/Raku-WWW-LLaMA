@@ -1,6 +1,6 @@
 {
-  "name": "WWW::LlamaFile",
-  "description": "WWW::LlamaFile provides access to the llamafile playground.",
+  "name": "WWW::LLaMA",
+  "description": "WWW::LLaMA provides access to the LLaMA playground.",
   "version": "0.1.0",
   "perl": "6.d",
   "authors": [
@@ -15,11 +15,11 @@
   "build-depends": [],
   "test-depends": [],
   "provides": {
-    "WWW::LlamaFile": "lib/WWW/LlamaFile.rakumod",
-    "WWW::LlamaFile::ChatCompletions": "lib/WWW/LlamaFile/ChatCompletions.rakumod",
-    "WWW::LlamaFile::Embeddings": "lib/WWW/LlamaFile/Embeddings.rakumod",
-    "WWW::LlamaFile::Models": "lib/WWW/LlamaFile/Models.rakumod",
-    "WWW::LlamaFile::Request": "lib/WWW/LlamaFile/Request.rakumod"
+    "WWW::LLaMA": "lib/WWW/LLaMA.rakumod",
+    "WWW::LLaMA::ChatCompletions": "lib/WWW/LLaMA/ChatCompletions.rakumod",
+    "WWW::LLaMA::Embeddings": "lib/WWW/LLaMA/Embeddings.rakumod",
+    "WWW::LLaMA::Models": "lib/WWW/LLaMA/Models.rakumod",
+    "WWW::LLaMA::Request": "lib/WWW/LLaMA/Request.rakumod"
   },
   "resources": [],
   "license": "Artistic-2.0",

@@ -1,4 +1,4 @@
-# WWW::LlamaFile
+# WWW::LLaMA
 
 ## In brief
 
@@ -9,7 +9,7 @@ This package is very similar to the packages
 ["WWW::OpenAI"](https://github.com/antononcube/Raku-WWW-OpenAI), [AAp1], and 
 ["WWW::MistralAI"](https://github.com/antononcube/Raku-WWW-MistralAI), [AAp2]. 
 
-"WWW::LlamaFile" can be used with (is integrated with) 
+"WWW::LLaMA" can be used with (is integrated with) 
 ["LLM::Functions"](https://github.com/antononcube/Raku-LLM-Functions), [AAp3], and
 ["Jupyter::Chatbook"](https://github.com/antononcube/Raku-Jupyter-Chatbook), [AAp5].
 
@@ -27,7 +27,7 @@ Package installations from both sources use [zef installer](https://github.com/u
 To install the package from [Zef ecosystem](https://raku.land/) use the shell command:
 
 ```
-zef install WWW::LlamaFile
+zef install WWW::LLaMA
 ```
 
 To install the package from the GitHub repository use the shell command:
@@ -42,36 +42,36 @@ zef install https://github.com/antononcube/Raku-WWW-LlamaFile.git
 
 **Remark:** When the authorization key, `auth-key`, is specified to be `Whatever`
 then it is assigned the string `sk-no-key-required`.
-If an authorization key is required then the env variable `LLAMAFILE_API_KEY` can be also used.
+If an authorization key is required then the env variable `LLAMA_API_KEY` can be also used.
 
 ### Universal "front-end"
 
-The package has an universal "front-end" function `llamafile-playground` for the 
+The package has an universal "front-end" function `llama-playground` for the 
 [different functionalities provided by llamafile](https://github.com/Mozilla-Ocho/llamafile/blob/main/README.md).
 
 Here is a simple call for a "chat completion":
 
 ```perl6
-use WWW::LlamaFile;
-llamafile-playground('Where is Roger Rabbit?');
+use LLaMA;
+llama-playground('Where is Roger Rabbit?');
 ```
 
 Another one using Bulgarian:
 
 ```perl6
-llamafile-playground('Колко групи могат да се намерят в този облак от точки.', max-tokens => 300, random-seed => 234232, format => 'values');
+llama-playground('Колко групи могат да се намерят в този облак от точки.', max-tokens => 300, random-seed => 234232, format => 'values');
 ```
 
-**Remark:** The functions `llamafile-chat-completion` or `llamafile-completion` can be used instead in the examples above.
+**Remark:** The functions `llama-chat-completion` or `llama-completion` can be used instead in the examples above.
 (The latter is synonym of the former.)
 
 
 ### Models
 
-The current MistralAI models can be found with the function `llamafile-models`:
+The current MistralAI models can be found with the function `llama-models`:
 
 ```perl6
-*<id>.say for |llamafile-models;
+*<id>.say for |llama-models;
 ```
 
 ### Code generation
@@ -80,7 +80,7 @@ There are two types of completions : text and chat. Let us illustrate the differ
 of their usage by Raku code generation. Here is a text completion:
 
 ```perl6
-llamafile-completion(
+llama-completion(
         'generate Raku code for making a loop over a list',
         max-tokens => 120,
         format => 'values');
@@ -89,7 +89,7 @@ llamafile-completion(
 Here is a chat completion:
 
 ```perl6
-llamafile-completion(
+llama-completion(
         'generate Raku code for making a loop over a list',
         max-tokens => 120,
         format => 'values');
@@ -98,7 +98,7 @@ llamafile-completion(
 
 ### Embeddings
 
-Embeddings can be obtained with the function `llamafile-embeddings`. Here is an example of finding the embedding vectors
+Embeddings can be obtained with the function `llama-embeddings`. Here is an example of finding the embedding vectors
 for each of the elements of an array of strings:
 
 ```perl6
@@ -109,7 +109,7 @@ my @queries = [
     'what is a good meat and potatoes recipe'
 ];
 
-my $embs = llamafile-embeddings(@queries, format => 'values', method => 'tiny');
+my $embs = llama-embeddings(@queries, format => 'values', method => 'tiny');
 $embs.elems;
 ```
 
@@ -160,7 +160,7 @@ END
 Here is an example of chat completion with emojification:
 
 ```perl6
-llamafile-chat-completion([ system => $preEmojify, user => 'Python sucks, Raku rocks, and Perl is annoying'], max-tokens => 200, format => 'values')
+llama-chat-completion([ system => $preEmojify, user => 'Python sucks, Raku rocks, and Perl is annoying'], max-tokens => 200, format => 'values')
 ```
 
 -------
@@ -172,18 +172,18 @@ llamafile-chat-completion([ system => $preEmojify, user => 'Python sucks, Raku r
 The package provides a Command Line Interface (CLI) script:
 
 ```shell
-llamafile-playground --help
+llama-playground --help
 ```
 
 **Remark:** When the authorization key, `auth-key`, is specified to be `Whatever`
 then it is assigned the string `sk-no-key-required`.
-If an authorization key is required then the env variable `LLAMAFILE_API_KEY` can be also used.
+If an authorization key is required then the env variable `LLAMA_API_KEY` can be also used.
 
 --------
 
 ## Mermaid diagram
 
-The following flowchart corresponds to the steps in the package function `llamafile-playground`:
+The following flowchart corresponds to the steps in the package function `llama-playground`:
 
 ```mermaid
 graph TD
@@ -197,7 +197,7 @@ graph TD
 	MURL[[Make URL]]
 	TTC[Process]
 	QAK{Auth key<br>supplied?}
-	EAK[["Try to find<br>LLAMAFILE_API_KEY<br>in %*ENV"]]
+	EAK[["Try to find<br>LLAMA_API_KEY<br>in %*ENV"]]
 	QEAF{Auth key<br>found?}
 	NAK[["Use 'sk-no-key-required'"]]
 	UI --> QAK
