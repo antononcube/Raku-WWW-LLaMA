@@ -8,9 +8,9 @@ use WWW::LLaMA::Request;
 #============================================================
 # Known models
 #============================================================
-# See : https://docs.mistral.ai/platform/endpoints
+# See : https://github.com/Mozilla-Ocho/llamafile/blob/main/llama.cpp/server/README.md#api-endpoints
 
-my $knownModels = Set.new(<mistral-tiny mistral-small mistral-medium mistral-embed>);
+my $knownModels = Set.new(<gpt-3.5-turbo>);
 
 
 our sub llama-known-models() is export {
@@ -21,11 +21,11 @@ our sub llama-known-models() is export {
 # Compatibility of models and end-points
 #============================================================
 
-# See : https://docs.mistral.ai/platform/endpoints
+# See : https://github.com/Mozilla-Ocho/llamafile/blob/main/llama.cpp/server/README.md#api-endpoints
 
 my %endPointToModels =
-        'embeddings' => <mistral-embed>,
-        'chat/completions' => <mistral-tiny mistral-small mistral-medium>;
+        'embeddings' => <gpt-3.5-turbo>,
+        'chat/completions' => <gpt-3.5-turbo>;
 
 #| End-point to models retrieval.
 proto sub llama-end-point-to-models(|) is export {*}
@@ -47,7 +47,6 @@ multi sub llama-is-chat-completion-model(Str $model) {
 
 #------------------------------------------------------------
 # Invert to get model-to-end-point correspondence.
-# At this point (2023-04-14) only the model "whisper-1" has more than one end-point.
 my %modelToEndPoints = %endPointToModels.map({ $_.value.Array X=> $_.key }).flat.classify({ $_.key }).map({ $_.key => $_.value>>.value.Array });
 
 #| Model to end-points retrieval.
