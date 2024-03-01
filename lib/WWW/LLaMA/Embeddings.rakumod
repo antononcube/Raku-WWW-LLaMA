@@ -49,7 +49,7 @@ multi sub LLaMAEmbeddings($prompt,
     # LLaMA URL
     #------------------------------------------------------
 
-    my $url = $base-url ~ '/v1/embeddings';
+    my $url = $base-url ~ '/embedding';
 
     #------------------------------------------------------
     # Delegate
