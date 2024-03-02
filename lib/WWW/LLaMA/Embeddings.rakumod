@@ -34,7 +34,7 @@ multi sub LLaMAEmbeddings($prompt,
     #------------------------------------------------------
     # Process $model
     #------------------------------------------------------
-    if $model.isa(Whatever) { $model = 'llama-embeddings'; }
+    if $model.isa(Whatever) { $model = 'llama-embedding'; }
     die "The argument \$model is expected to be Whatever or one of the strings: { '"' ~ llama-known-models.keys.sort.join('", "') ~ '"' }."
     unless $model ∈ llama-known-models;
 
