@@ -205,8 +205,11 @@ multi sub llama-request(Str :$url!,
                 # Assuming image generation
                 $res<data>.map({ $_<url> // $_<b64_json> // $_<embedding> }).Array;
             } elsif $res<results> {
-                # Assuming embedding
+                # Assuming embedding or array of strings
                 $res<results>.map({ $_<embedding> }).Array;
+            } elsif $res<embedding> {
+                # Assuming embedding of string
+                $res<embedding>.Array
             } elsif $res<tokens> {
                 # Assuming tokenizing
                 $res<tokens>.Array;
