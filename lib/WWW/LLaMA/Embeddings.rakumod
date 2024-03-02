@@ -17,7 +17,7 @@ our proto LLaMAEmbeddings($prompt,
                           UInt :$timeout= 10,
                           :$format is copy = Whatever,
                           Str :$method = 'tiny',
-                          Str :$base-url = 'http://127.0.0.1:8080/v1'
+                          Str :$base-url = 'http://127.0.0.1:8080'
                           ) is export {*}
 
 
@@ -29,12 +29,12 @@ multi sub LLaMAEmbeddings($prompt,
                           UInt :$timeout= 10,
                           :$format is copy = Whatever,
                           Str :$method = 'tiny',
-                          Str :$base-url = 'http://127.0.0.1:8080/v1') {
+                          Str :$base-url = 'http://127.0.0.1:8080') {
 
     #------------------------------------------------------
     # Process $model
     #------------------------------------------------------
-    if $model.isa(Whatever) { $model = 'mistral-embed'; }
+    if $model.isa(Whatever) { $model = 'llama-embeddings'; }
     die "The argument \$model is expected to be Whatever or one of the strings: { '"' ~ llama-known-models.keys.sort.join('", "') ~ '"' }."
     unless $model ∈ llama-known-models;
 
@@ -57,13 +57,13 @@ multi sub LLaMAEmbeddings($prompt,
     if ($prompt ~~ Positional || $prompt ~~ Seq) && $method ∈ <tiny> {
 
         return llama-request(:$url,
-                body => to-json({ input => $prompt.Array, :$model, encoding_format => $encoding-format }),
+                body => to-json({ content => $prompt.Array }),
                 :$auth-key, :$timeout, :$format, :$method);
 
     } else {
 
         return llama-request(:$url,
-                body => to-json({ input => $prompt.Array, :$model, encoding_format => $encoding-format }),
+                body => to-json({ content => $prompt.Array }),
                 :$auth-key, :$timeout, :$format, :$method);
     }
 }
