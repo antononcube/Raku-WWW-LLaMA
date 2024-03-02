@@ -6,6 +6,7 @@ use HTTP::Tiny;
 use WWW::LLaMA::ChatCompletions;
 use WWW::LLaMA::TextCompletions;
 use WWW::LLaMA::Embeddings;
+use WWW::LLaMA::Tokenizing;
 use WWW::LLaMA::Models;
 use WWW::LLaMA::Request;
 
@@ -77,10 +78,32 @@ multi sub llama-chat-completion(**@args, *%args) {
 #| C<:$timeout> -- timeout;
 #| C<:$format> -- format to use in answers post processing, one of <values json hash asis>);
 #| C<:$method> -- method to WWW API call with, one of <curl tiny>.
-our proto llama-embeddings(|) is export {*}
+our proto llama-embedding(|) is export {*}
 
-multi sub llama-embeddings(**@args, *%args) {
+multi sub llama-embedding(**@args, *%args) {
     return WWW::LLaMA::Embeddings::LLaMAEmbeddings(|@args, |%args);
+}
+
+#===========================================================
+#| LLaMA tokenizing access.
+#| C<$prompt> -- prompt to tokenize;
+#| C<:$timeout> -- timeout;
+#| C<:$method> -- method to WWW API call with, one of <curl tiny>.
+our proto llama-tokenize(|) is export {*}
+
+multi sub llama-tokenize(**@args, *%args) {
+    return WWW::LLaMA::Tokenizing::LLaMATokenizing(|@args, type => 'tokenize', |%args);
+}
+
+#===========================================================
+#| LLaMA de-tokenizing access.
+#| C<$prompt> -- tokens to de-tokenize;
+#| C<:$timeout> -- timeout;
+#| C<:$method> -- method to WWW API call with, one of <curl tiny>.
+our proto llama-detokenize(|) is export {*}
+
+multi sub llama-detokenize(**@args, *%args) {
+    return WWW::LLaMA::Tokenizing::LLaMATokenizing(|@args, type => 'detokenize', |%args);
 }
 
 #===========================================================
@@ -159,7 +182,7 @@ multi sub llama-playground($text is copy,
         }
         when $_ ∈ <embedding embeddings> {
             # my $url = 'http://127.0.0.1:8080/embeddings';
-            return llama-embeddings($text,
+            return llama-embedding($text,
                     |%args.grep({ $_.key ∈ <model encoding-format> }).Hash,
                     :$auth-key, :$timeout, :$format, :$method, :$base-url);
         }
