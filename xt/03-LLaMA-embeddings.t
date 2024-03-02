@@ -13,7 +13,7 @@ plan *;
 ## 1
 my $query = 'make a classifier with the method RandomForeset over the data dfTitanic; show precision and accuracy; plot True Positive Rate vs Positive Predictive Value.';
 
-is llama-embeddings($query, format => "values", :$method).WHAT ∈ (Array, Positional, Seq), True;
+is llama-embedding($query, format => "values", :$method).WHAT ∈ (Array, Positional, Seq), True;
 
 ## 2
 my @queries = [
@@ -23,9 +23,9 @@ my @queries = [
         'what is a good meat and potatoes recipe'
 ];
 
-is llama-embeddings(@queries, format => "values", :$method, encoding-format => 'base64').WHAT ∈ (Array, Positional, Seq), True;
+is llama-embedding(@queries, format => "values", :$method, encoding-format => 'base64').WHAT ∈ (Array, Positional, Seq), True;
 
 ## 3
-is llama-embeddings(@queries, format => "values", :$method).elems, @queries.elems;
+is llama-embedding(@queries, format => "values", :$method).elems, @queries.elems;
 
 done-testing;
