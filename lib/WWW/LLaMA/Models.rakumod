@@ -10,7 +10,7 @@ use WWW::LLaMA::Request;
 #============================================================
 # See : https://github.com/Mozilla-Ocho/llamafile/blob/main/llama.cpp/server/README.md#api-endpoints
 
-my $knownModels = Set.new(<gpt-3.5-turbo>);
+my $knownModels = Set.new(<gpt-3.5-turbo llama-embeddings>);
 
 
 our sub llama-known-models() is export {
@@ -24,7 +24,7 @@ our sub llama-known-models() is export {
 # See : https://github.com/Mozilla-Ocho/llamafile/blob/main/llama.cpp/server/README.md#api-endpoints
 
 my %endPointToModels =
-        'embeddings' => <gpt-3.5-turbo>,
+        'embeddings' => <llama-embeddings gpt-3.5-turbo>,
         'chat/completions' => <gpt-3.5-turbo>;
 
 #| End-point to models retrieval.
@@ -68,7 +68,7 @@ multi sub llama-model-to-end-points(Str $model) {
 our sub LLaMAModels(
         :$format is copy = Whatever,
         Str :$method = 'tiny',
-        Str :$base-url = 'http://127.0.0.1:8080/v1',
+        Str :$base-url = 'http://127.0.0.1:8080',
         :api-key(:$auth-key) is copy = Whatever,
         UInt :$timeout = 10) is export {
     #------------------------------------------------------
