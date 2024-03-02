@@ -32,7 +32,7 @@ our proto LLaMAChatCompletion($prompt is copy,
                               UInt :$timeout= 10,
                               :$format is copy = Whatever,
                               Str :$method = 'tiny',
-                              Str :$base-url = 'http://127.0.0.1:8080/v1') is export {*}
+                              Str :$base-url = 'http://127.0.0.1:8080') is export {*}
 
 #| LLaMA completion access.
 multi sub LLaMAChatCompletion(Str $prompt, *%args) {
@@ -52,7 +52,7 @@ multi sub LLaMAChatCompletion(@prompts is copy,
                               UInt :$timeout= 10,
                               :$format is copy = Whatever,
                               Str :$method = 'tiny',
-                              Str :$base-url = 'http://127.0.0.1:8080/v1') {
+                              Str :$base-url = 'http://127.0.0.1:8080') {
 
     #------------------------------------------------------
     # Process $role
@@ -64,7 +64,7 @@ multi sub LLaMAChatCompletion(@prompts is copy,
     #------------------------------------------------------
     # Process $model
     #------------------------------------------------------
-    if $model.isa(Whatever) { $model = 'mistral-tiny'; }
+    if $model.isa(Whatever) { $model = 'gpt-3.5-turbo'; }
     die "The argument \$model is expected to be Whatever or one of the strings: { '"' ~ llama-known-models.keys.sort.join('", "') ~ '"' }."
     unless $model ∈ llama-known-models;
 
@@ -73,12 +73,12 @@ multi sub LLaMAChatCompletion(@prompts is copy,
     #------------------------------------------------------
     if $temperature.isa(Whatever) { $temperature = 0.7; }
     die "The argument \$temperature is expected to be Whatever or number between 0 and 2."
-    unless $temperature ~~ Numeric && 0 ≤ $temperature ≤ 1;
+    unless $temperature ~~ Numeric && 0 ≤ $temperature ≤ 2;
 
     #------------------------------------------------------
     # Process $max-tokens
     #------------------------------------------------------
-    if $max-tokens.isa(Whatever) { $max-tokens = 64; }
+    if $max-tokens.isa(Whatever) { $max-tokens = -1; }
     die "The argument \$max-tokens is expected to be Whatever or a positive integer."
     unless $max-tokens ~~ Int && 0 < $max-tokens;
 
@@ -125,7 +125,7 @@ multi sub LLaMAChatCompletion(@prompts is copy,
         %body.push('random_seed' => $random-seed);
     }
 
-    my $url = $base-url ~ '/chat/completions';
+    my $url = $base-url ~ '/v1/chat/completions';
 
     #------------------------------------------------------
     # Delegate
