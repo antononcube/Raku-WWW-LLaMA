@@ -193,7 +193,11 @@ multi sub llama-request(Str :$url!,
 
     return do given $format.lc {
         when $_ eq 'values' {
-            if $res<choices>:exists {
+            if $res<content>:exists {
+                # Assuming "simple" text completion
+                my @res2 = $res<content>;
+                @res2.elems == 1 ?? @res2[0] !! @res2;
+            } elsif $res<choices>:exists {
                 # Assuming text of chat completion
                 my @res2 = $res<choices>.map({ $_<text> // $_<message><content> }).Array;
                 @res2.elems == 1 ?? @res2[0] !! @res2;
@@ -201,8 +205,8 @@ multi sub llama-request(Str :$url!,
                 # Assuming image generation
                 $res<data>.map({ $_<url> // $_<b64_json> // $_<embedding> }).Array;
             } elsif $res<results> {
-                # Assuming moderation
-                $res<results>.map({ $_<category_scores> // $_<categories> }).Array;
+                # Assuming embedding
+                $res<results>.map({ $_<embedding> }).Array;
             } else {
                 $res;
             }
