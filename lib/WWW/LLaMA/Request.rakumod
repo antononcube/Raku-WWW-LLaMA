@@ -207,6 +207,9 @@ multi sub llama-request(Str :$url!,
             } elsif $res<results> {
                 # Assuming embedding
                 $res<results>.map({ $_<embedding> }).Array;
+            } elsif $res<tokens> {
+                # Assuming tokenizing
+                $res<tokens>.Array;
             } else {
                 $res;
             }
