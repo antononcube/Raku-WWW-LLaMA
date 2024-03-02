@@ -194,7 +194,7 @@ multi sub llama-request(Str :$url!,
     return do given $format.lc {
         when $_ eq 'values' {
             if $res<content>:exists {
-                # Assuming "simple" text completion
+                # Assuming "simple" text completion or de-tokenizing
                 my @res2 = $res<content>;
                 @res2.elems == 1 ?? @res2[0] !! @res2;
             } elsif $res<choices>:exists {
