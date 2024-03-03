@@ -33,7 +33,7 @@ sub llama-completion(**@args, *%args) is export {
 }
 
 #===========================================================
-#| LLaMA chat completions access.
+#| LLaMA "simple" completion access.
 #| C<$prompt> -- message(s) to the LLM;
 #| C<:$role> -- role associated with the message(s);
 #| C<:$model> -- model;
@@ -49,6 +49,29 @@ our proto llama-text-completion(|) is export {*}
 
 multi sub llama-text-completion(**@args, *%args) {
     return WWW::LLaMA::TextCompletions::LLaMATextCompletion(|@args, |%args);
+}
+
+#===========================================================
+#| LLaMA code infill access.
+#| C<:$input-prefix> -- code prefix;
+#| C<:$input-suffix> -- code suffix;
+#| C<:$role> -- role associated with the message(s);
+#| C<:$model> -- model;
+#| C<:$temperature> -- number between 0 and 2;
+#| C<:$max-tokens> -- max number of tokens of the results;
+#| C<:$top-p> -- top probability of tokens to use in the answer;
+#| C<:api-key($auth-key)> -- authorization key (API key);
+#| C<:$timeout> -- timeout;
+#| C<:$format> -- format to use in answers post processing, one of <values json hash asis>);
+#| C<:$method> -- method to WWW API call with, one of <curl tiny>.
+our proto llama-code-infill(|) is export {*}
+
+multi sub llama-code-infill(*%args) {
+    my %args2 = %args;
+    %args2<input-prefix> = %args<input-prefix> // %args<prefix> // Whatever;
+    %args2<input-suffix> = %args<input-suffix> // %args<suffix> // Whatever;
+    %args2 = %args2.grep({ $_.key ∉ <prompt stream prefix suffix> });
+    return WWW::LLaMA::TextCompletions::LLaMATextCompletion('', |%args2);
 }
 
 #===========================================================
@@ -149,7 +172,7 @@ multi sub llama-playground(@texts, *%args) {
 
 #| LLaMA playground access.
 multi sub llama-playground($text is copy,
-                           Str :$path = 'completions',
+                           Str :$path = 'completion',
                            :api-key(:$auth-key) is copy = Whatever,
                            UInt :$timeout= 10,
                            :$format is copy = Whatever,
@@ -161,6 +184,8 @@ multi sub llama-playground($text is copy,
     #------------------------------------------------------
     # Dispatch
     #------------------------------------------------------
+    my $paramsForAll = <$auth-key timeout format method base-url>;
+
     given $path.lc {
         when $_ eq 'models' {
             # my $url = 'http://127.0.0.1:8080/models';
@@ -175,8 +200,19 @@ multi sub llama-playground($text is copy,
         }
         when $_ ∈ <completion completions text/completion text/completions> {
             # my $url = 'https://127.0.0.1:8080/completion';
-            my $expectedKeys = <model prompt suffix max-tokens temperature top-p n stream echo presence-penalty frequency-penalty best-of stop>;
+            # Find known parameters
+            my $expectedKeys = WWW::LLaMA::TextCompletions::LLaMATextCompletion.candidates.map({ $_.signature.params.map({ $_.usage-name }) }).flat;
+            $expectedKeys = $expectedKeys (-) $paramsForAll;
             return llama-text-completion($text,
+                    |%args.grep({ $_.key ∈ $expectedKeys }).Hash,
+                    :$auth-key, :$timeout, :$format, :$method, :$base-url);
+        }
+        when $_ ∈ <infill code-infill> {
+            # my $url = 'https://127.0.0.1:8080/infill';
+            # Find known parameters
+            my $expectedKeys = WWW::LLaMA::TextCompletions::LLaMATextCompletion.candidates.map({ $_.signature.params.map({ $_.usage-name }) }).flat;
+            $expectedKeys = $expectedKeys (-) $paramsForAll;
+            return llama-code-infill(
                     |%args.grep({ $_.key ∈ $expectedKeys }).Hash,
                     :$auth-key, :$timeout, :$format, :$method, :$base-url);
         }

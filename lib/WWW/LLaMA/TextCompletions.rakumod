@@ -231,7 +231,15 @@ multi sub LLaMATextCompletion($prompt is copy,
     if !$input-suffix.isa(Whatever) { %body<input_suffix> = $input-suffix; }
     if !$penalty-prompt.isa(Whatever) { %body<penalty_prompt> = $penalty-prompt; }
 
-    my $url = $base-url ~ '/completion';
+    my $url;
+    if !$input-prefix.isa(Whatever) || !$input-suffix.isa(Whatever) {
+        # For code infill drop prompt and stream
+        %body = %body.grep({ $_.key ∉ <stream prompt> });
+        $url = $base-url ~ '/infill';
+    } else {
+        $url = $base-url ~ '/completion';
+    }
+
 
     #------------------------------------------------------
     # Delegate
