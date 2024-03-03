@@ -11,6 +11,7 @@ use JSON::Fast;
 
 #| LLaMA embeddings.
 our proto LLaMAEmbeddings($prompt,
+                          :@image-data = [],
                           :$model = Whatever,
                           :$encoding-format = Whatever,
                           :api-key(:$auth-key) is copy = Whatever,
@@ -23,6 +24,7 @@ our proto LLaMAEmbeddings($prompt,
 
 #| LLaMA embeddings.
 multi sub LLaMAEmbeddings($prompt,
+                          :@image-data = [],
                           :$model is copy = Whatever,
                           :$encoding-format is copy = Whatever,
                           :api-key(:$auth-key) is copy = Whatever,
@@ -49,6 +51,11 @@ multi sub LLaMAEmbeddings($prompt,
     # LLaMA URL
     #------------------------------------------------------
 
+    my %body = content => $prompt.Array;
+    if @image-data {
+       %body<image_data> = @image-data;
+    }
+
     my $url = $base-url ~ '/embedding';
 
     #------------------------------------------------------
@@ -57,13 +64,13 @@ multi sub LLaMAEmbeddings($prompt,
     if ($prompt ~~ Positional || $prompt ~~ Seq) && $method ∈ <tiny> {
 
         return llama-request(:$url,
-                body => to-json({ content => $prompt.Array }),
+                body => to-json(%body),
                 :$auth-key, :$timeout, :$format, :$method);
 
     } else {
 
         return llama-request(:$url,
-                body => to-json({ content => $prompt.Array }),
+                body => to-json(%body),
                 :$auth-key, :$timeout, :$format, :$method);
     }
 }

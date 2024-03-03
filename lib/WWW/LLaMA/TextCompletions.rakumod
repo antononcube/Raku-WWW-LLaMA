@@ -37,7 +37,7 @@ our proto LLaMATextCompletion($prompt is copy,
                               Bool :$ignore-eos = False,
                               :@logit-bias = [],
                               UInt :$n-probs = 0,
-                              :$image-data is copy = Whatever,
+                              :@image-data = [],
                               :$slot-id is copy = Whatever,
                               Bool :$cache-prompt = False,
                               :$system-prompt is copy = Whatever,
@@ -82,7 +82,7 @@ multi sub LLaMATextCompletion($prompt is copy,
                               Bool :$ignore-eos = False,
                               :@logit-bias = [],
                               UInt :$n-probs = 0,
-                              :$image-data is copy = Whatever,
+                              :@image-data = [],
                               :$slot-id is copy = Whatever,
                               Bool :$cache-prompt = False,
                               :$system-prompt is copy = Whatever,
@@ -230,6 +230,7 @@ multi sub LLaMATextCompletion($prompt is copy,
     if !$input-prefix.isa(Whatever) { %body<input_prefix> = $input-prefix; }
     if !$input-suffix.isa(Whatever) { %body<input_suffix> = $input-suffix; }
     if !$penalty-prompt.isa(Whatever) { %body<penalty_prompt> = $penalty-prompt; }
+    if @image-data { %body<image_data> = @image-data; }
 
     my $url;
     if !$input-prefix.isa(Whatever) || !$input-suffix.isa(Whatever) {
