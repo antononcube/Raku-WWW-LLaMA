@@ -133,9 +133,9 @@ multi sub llama-detokenize(**@args, *%args) {
 #| LLaMA models access.
 #| C<:api-key($auth-key)> -- authorization key (API key);
 #| C<:$timeout> -- timeout.
-our proto llama-models(|) is export {*}
+our proto llama-model(|) is export {*}
 
-multi sub llama-models(*%args) {
+multi sub llama-model(*%args) {
     return WWW::LLaMA::Models::LLaMAModels(|%args);
 }
 
@@ -187,9 +187,8 @@ multi sub llama-playground($text is copy,
     my $paramsForAll = <$auth-key timeout format method base-url>;
 
     given $path.lc {
-        when $_ eq 'models' {
-            # my $url = 'http://127.0.0.1:8080/models';
-            return llama-models(:$auth-key, :$timeout, :$method, :$base-url);
+        when $_ ∈ <model models> {
+            return llama-model(:$auth-key, :$timeout, :$method, :$base-url);
         }
         when $_ ∈ <chat chat/completion chat/completions> {
             # my $url = 'http://127.0.0.1:8080/v1/chat/completions';
