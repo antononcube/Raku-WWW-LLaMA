@@ -79,9 +79,10 @@ our sub LLaMAModels(
         if %*ENV<LLAMA_API_KEY>:exists {
             $auth-key = %*ENV<LLAMA_API_KEY>;
         } else {
-            note 'Cannot find Mistral.AI authorization key. ' ~
-                    'Please provide a valid key to the argument auth-key, or set the ENV variable LLAMA_API_KEY.';
-            $auth-key = ''
+            $auth-key = "sk-no-key-required";
+#            note 'Cannot find LLaMA authorization key. ' ~
+#                    'Please provide a valid key to the argument auth-key, or set the ENV variable LLAMA_API_KEY.';
+#            $auth-key = ''
         }
     }
     die "The argument auth-key is expected to be a string or Whatever."
