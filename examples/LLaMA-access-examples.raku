@@ -10,8 +10,14 @@ say llama-text-completion(
         :cache-prompt,
         format => 'values');
 
+#========================================================================================================================
 say '=' x 120;
 
 #say llama-chat-completion("What is the min speed of a rocket leaving Earth?", format => 'values', max-tokens => 90);
 
 say llama-playground("What is the min speed of a rocket leaving Earth?", type => 'chat', format => Whatever, max-tokens => 900);
+
+#========================================================================================================================
+say '=' x 120;
+
+say llama-model;
