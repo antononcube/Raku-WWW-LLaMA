@@ -15,7 +15,11 @@ This package is very similar to the packages
 
 Also, of course, prompts from 
 ["LLM::Prompts"](https://github.com/antononcube/Raku-LLM-Prompts), [AAp4],
-can be used with MistralAI's functions.
+can be used with LLaMA's functions.
+
+**Remark:** The package "WWW::OpenAI" can be also used to access 
+["llamafile" chat completions](https://github.com/Mozilla-Ocho/llamafile/blob/main/llama.cpp/server/README.md#api-endpoints).
+That is done by specifying appropriate base URL to the `openai-chat-completion` function.
 
 -----
 
@@ -63,42 +67,11 @@ Here is a simple call for a "chat completion":
 
 ```perl6
 use WWW::LLaMA;
-llama-playground('Where is Roger Rabbit?');
+llama-playground('What is the speed of a rocket leaving Earth?');
 ```
 ```
-# {content =>  Well, the answer is that he's in a new game coming to PlayStation 4 and Xbox One later this year.
-# 
-# The game, called "Roger Rabbit: The Toon Town Big Easy" has been announced by Animation Workshop as part of a partnership between the Danish studio and Disney.
-# 
-# The game is described as an action-adventure platformer where players will explore Toontown with Roger Rabbit. The game's story sees the beloved cartoon character "arriving in New Orlean's Toon Town, which has been taken over by the weasels," according to a press release from Animations Workshop.
-# 
-# Roger must team up with Benny the Cab and Jessica Rabbit to "save the city from their clutches" while also trying to keep his identity hidden from the evil Judge Doom.
-# 
-# Here's a brief look at some gameplay, which shows Roger exploring a swampy area of Toontown:
-# 
-# The game is being developed using Unreal Engine 4, and will be available digitally for $39.99 later this year. Animations Workshop says it has been working on the project for over a year with Disney's cooperation to make sure "the game captures the spirit of Roger Rabbit."
-# 
-# Roger Rabbit is a beloved character who was introduced in the 1988 live-action/animation film "Who Framed Roger Rabbit?" The movie, which starred Bob Hoskins as Eddie Valiant, was a critical and commercial success.
-# 
-# It's great to see Disney license a classic character like Roger for a new game, and it appears Animations Workshop is going all-in with the project, even offering a physical collector's edition of the game that includes "a unique art book, a soundtrack CD and exclusive Toon Town stickers."
-# 
-# Are you looking forward to playing as Roger Rabbit later this year? Let us know in the comments below.
-# 
-# ### The Galaxy S20 Ultra's Space Zoom camera is amazing and a bit creepy
-# 
-# The Galaxy S20 Ultra supports up to 100X zoom, which Samsung calls Space Zoom, but is it any good? Can a phone really product usable photos at 100x zoom? We've got answers, and maybe some unsettling images.
-# 
-# Game on 🎮
-# 
-# ### Play to your heart's content with the best gaming console on a budget
-# 
-# Feeling like you're missing out on the gaming world because you don't have a console? These consoles prove that you can have an amazing gaming experience at a budget price.
-# 
-# Android & Chill
-# 
-# ### The Galaxy Watch 4 is Wear OS' breakdown point
-# 
-# Samsung's latest smartwatch is the first one to run on Wear OS instead of Tizen, but is the change worth it? Here's how the Galaxy Watch 4 and One UI watch software compares to the previous iteration., generation_settings => {frequency_penalty => 0, grammar => , ignore_eos => False, logit_bias => [], min_p => 0.05000000074505806, mirostat => 0, mirostat_eta => 0.10000000149011612, mirostat_tau => 5, model => mistral-7b-instruct-v0.2.Q5_K_M.gguf, n_ctx => 4096, n_keep => 0, n_predict => -1, n_probs => 0, penalize_nl => True, penalty_prompt_tokens => [], presence_penalty => 0, repeat_last_n => 64, repeat_penalty => 1.100000023841858, seed => 4294967295, stop => [], stream => False, temperature => 0.800000011920929, tfs_z => 1, top_k => 40, top_p => 0.949999988079071, typical_p => 1, use_penalty_prompt_tokens => False}, model => mistral-7b-instruct-v0.2.Q5_K_M.gguf, prompt => Where is Roger Rabbit?, slot_id => 0, stop => True, stopped_eos => True, stopped_limit => False, stopped_word => False, stopping_word => , timings => {predicted_ms => 17563.121, predicted_n => 653, predicted_per_second => 37.1801799919274, predicted_per_token_ms => 26.896050535987747, prompt_ms => 120.068, prompt_n => 7, prompt_per_second => 58.300296498650766, prompt_per_token_ms => 17.152571428571427}, tokens_cached => 659, tokens_evaluated => 7, tokens_predicted => 653, truncated => False}
+# {content => 
+# , and how does it change as the rocket's altitude increases?, generation_settings => {frequency_penalty => 0, grammar => , ignore_eos => False, logit_bias => [], min_p => 0.05000000074505806, mirostat => 0, mirostat_eta => 0.10000000149011612, mirostat_tau => 5, model => llava-v1.5-7b-Q4_K.gguf, n_ctx => 1365, n_keep => 0, n_predict => -1, n_probs => 0, penalize_nl => True, penalty_prompt_tokens => [], presence_penalty => 0, repeat_last_n => 64, repeat_penalty => 1.100000023841858, seed => 4294967295, stop => [], stream => False, temperature => 0.800000011920929, tfs_z => 1, top_k => 40, top_p => 0.949999988079071, typical_p => 1, use_penalty_prompt_tokens => False}, model => llava-v1.5-7b-Q4_K.gguf, prompt => What is the speed of a rocket leaving Earth?, slot_id => 0, stop => True, stopped_eos => True, stopped_limit => False, stopped_word => False, stopping_word => , timings => {predicted_ms => 340.544, predicted_n => 18, predicted_per_second => 52.8566059011464, predicted_per_token_ms => 18.91911111111111, prompt_ms => 94.65, prompt_n => 12, prompt_per_second => 126.78288431061804, prompt_per_token_ms => 7.8875}, tokens_cached => 29, tokens_evaluated => 12, tokens_predicted => 18, truncated => False}
 ```
 
 Another one using Bulgarian:
@@ -107,22 +80,9 @@ Another one using Bulgarian:
 llama-playground('Колко групи могат да се намерят в този облак от точки.', max-tokens => 300, random-seed => 234232, format => 'values');
 ```
 ```
-# Напишете програма, която намира броя на групите, състоящи се от 4 точки с равни координати по x и y (когато имат еднаква върховица), разположени в квадратна мрежа.
+# Например, група от 50 звезди може да се намери в този облак от 100 000 звезди, които са разпределени на различни места. За да се намерят всичките, е необходимо да се използва алгоритъм за търсене на най-близките съседи на всеки от обектите.
 # 
-# **Вход**: 3 реда с по 3 цели числа, съставящи елементите на координатите на точките – x и y.
-# 
-# **Изход**: Едно цяло число – броят на групите.
-# 
-# #### Пример
-# ```vbnet
-# | 1  3  4 |
-# |---|---|--|
-# | 2  4  5 |
-# | 3  4  6 |
-# ----------------------
-# 7
-# ```
-# В този пример има 7 групи: {(1,1), (3,1), (1,3), (1,3), (2,2), (3,2), (3,3)}
+# Въпреки че теоретично това може да бъде постигнато, реално това е много трудно и сложно, особено когато се има предвид голям брой звезди в облака.
 ```
 
 **Remark:** The functions `llama-chat-completion` or `llama-completion` can be used instead in the examples above.
@@ -131,16 +91,17 @@ llama-playground('Колко групи могат да се намерят в �
 
 ### Models
 
-The current LLaMA models can be found with the function `llama-models`:
+The current LLaMA model can be found with the function `llama-model`:
 
 ```perl6
-llama-models;
+llama-model;
 ```
 ```
-#ERROR: Cannot find Mistral.AI authorization key. Please provide a valid key to the argument auth-key, or set the ENV variable LLAMA_API_KEY.
-#ERROR: Cannot convert from JSON, returning "asis".
-# File Not Found
+# llava-v1.5-7b-Q4_K.gguf
 ```
+
+**Remark:** Since there is no dedicated API endpoint for getting the model(s),
+the current model is obtained via "simple" (non-chat) completion.
 
 ### Code generation
 
@@ -154,17 +115,15 @@ llama-completion(
         format => 'values');
 ```
 ```
-# To loop over a list in Raku, you can use the `for` keyword with the `XxList` iterator. Here is an example of how to do it:
+# Here's an example of Raku code for making a loop over a list:
+# ```
+# my @numbers = (1, 2, 3, 4, 5);
 # 
-# ```raku
-# my @list = (1, 2, 3, 4, 5);
-# 
-# for my $item (@list) {
-#     say "The number is: ", $item;
+# for @numbers -> $number {
+#     say "The number is $number.";
 # }
 # ```
-# 
-# In this example, `@list` is the list that we want to iterate over. The `for` loop goes through each item in
+# This will print the numbers in the list, one by one. The `->` operator is used to bind the value of each element in the list to a variable, and the `{}` block is used to define the code that should be executed for each iteration of the loop.
 ```
 
 Here is a chat completion:
@@ -176,15 +135,21 @@ llama-completion(
         format => 'values');
 ```
 ```
-# Here's a simple example of a loop over a list in Raku:
+# Here's an example of a loop over a list in Raku:
+# ```perl
+# my @list = (1, 2, 3, 4, 5);
 # 
-# ```raku
-# my @list = (1, 2, 3, 4, 5); # Create a list
-# for ^@list -> $element {
-#     say "Element: $element";
+# for @list -> $item {
+#     say "The value of $item is $item.";
 # }
 # ```
-# In this example, `^@list` is a range that generates indices for the elements in the list. The loop then assigns each element to the variable `$element` and performs an action (in this case, printing the element). You
+# This will output:
+# ```sql
+# The value of 1 is 1.
+# The value of 2 is 2.
+# The value of 3 is 3.
+# The value of 4 is 4.
+# The value of 5
 ```
 
 
@@ -223,16 +188,16 @@ records-summary($embs.kv.Hash.&transpose);
 ```
 # $embs.elems : 4
 # $embs>>.elems : 4096 4096 4096 4096
-# +----------------------------------+--------------------------------+----------------------------------+---------------------------------+
-# | 3                                | 2                              | 0                                | 1                               |
-# +----------------------------------+--------------------------------+----------------------------------+---------------------------------+
-# | Min    => -86.64485931396484     | Min    => -85.12604522705078   | Min    => -150.1730194091797     | Min    => -115.55949401855469   |
-# | 1st-Qu => -3.18321657180786135   | 1st-Qu => -3.4018837213516235  | 1st-Qu => -3.1311671733856201    | 1st-Qu => -2.5787762403488159   |
-# | Mean   => -0.0953787748984638    | Mean   => -0.02784229526803017 | Mean   => -0.0024599628797898794 | Mean   => -0.019579125041847334 |
-# | Median => -0.0252206642180681235 | Median => -0.12382630631327629 | Median => 0.0594599936157465     | Median => 0.02638726681470871   |
-# | 3rd-Qu => 3.0144025087356568     | 3rd-Qu => 3.31683588027954105  | 3rd-Qu => 3.3026289939880372     | 3rd-Qu => 2.6268826723098755    |
-# | Max    => 78.72677612304688      | Max    => 43.39240646362305    | Max    => 53.90862274169922      | Max    => 34.61551284790039     |
-# +----------------------------------+--------------------------------+----------------------------------+---------------------------------+
+# +--------------------------------+----------------------------------+---------------------------------+-----------------------------------+
+# | 1                              | 2                                | 0                               | 3                                 |
+# +--------------------------------+----------------------------------+---------------------------------+-----------------------------------+
+# | Min    => -30.241486           | Min    => -20.993749618530273    | Min    => -32.435486            | Min    => -31.10381317138672      |
+# | 1st-Qu => -0.7924895882606506  | 1st-Qu => -1.0563270449638367    | 1st-Qu => -0.9738395810127258   | 1st-Qu => -0.9602127969264984     |
+# | Mean   => 0.001538657780784547 | Mean   => -0.013997373717373307  | Mean   => 0.0013605252470370028 | Mean   => -0.03597712098735428    |
+# | Median => 0.016784800216555596 | Median => -0.0001810337998904288 | Median => 0.023735892958939075  | Median => -0.00221119043999351575 |
+# | 3rd-Qu => 0.77385222911834715  | 3rd-Qu => 0.9824191629886627     | 3rd-Qu => 0.9983229339122772    | 3rd-Qu => 0.9385882616043091      |
+# | Max    => 25.732345581054688   | Max    => 23.233409881591797     | Max    => 15.80211067199707     | Max    => 24.811737               |
+# +--------------------------------+----------------------------------+---------------------------------+-----------------------------------+
 ```
 
 Here we find the corresponding dot products and (cross-)tabulate them:
@@ -245,14 +210,14 @@ my @ct = (^$embs.elems X ^$embs.elems).map({ %( i => $_[0], j => $_[1], dot => s
 say to-pretty-table(cross-tabulate(@ct, 'i', 'j', 'dot'), field-names => (^$embs.elems)>>.Str);
 ```
 ```
-# +---+---------------+---------------+---------------+---------------+
-# |   |       0       |       1       |       2       |       3       |
-# +---+---------------+---------------+---------------+---------------+
-# | 0 | 149739.714274 |  43728.546745 |  45860.578925 |  32184.330663 |
-# | 1 |  43728.546745 | 102867.905887 |  46243.876793 |  38526.293732 |
-# | 2 |  45860.578925 |  46243.876793 | 133800.798610 |  31927.097299 |
-# | 3 |  32184.330663 |  38526.293732 |  31927.097299 | 127918.331646 |
-# +---+---------------+---------------+---------------+---------------+
+# +---+--------------+--------------+--------------+--------------+
+# |   |      0       |      1       |      2       |      3       |
+# +---+--------------+--------------+--------------+--------------+
+# | 0 | 14984.053717 | 1708.345468  | 4001.487938  | 7619.791201  |
+# | 1 | 1708.345468  | 10992.176167 | -1364.137315 | -2970.554539 |
+# | 2 | 4001.487938  | -1364.137315 | 14473.816914 | 6428.638382  |
+# | 3 | 7619.791201  | -2970.554539 | 6428.638382  | 14534.609050 |
+# +---+--------------+--------------+--------------+--------------+
 ````
 
 **Remark:** Note that the fourth element (the cooking recipe request) is an outlier.
@@ -267,7 +232,7 @@ my $txt = @queries.head;
 my $res = llama-tokenize($txt, format => 'values');
 ```
 ```
-# [1038 264 875 3591 395 272 2038 20575 28765 3626 299 754 272 1178 13808 28738 11374 294]
+# [1207 263 770 3709 411 278 1158 16968 29943 2361 300 975 278 848 4489 29911 8929 293]
 ```
 
 Here we get the original text be de-tokenizing:
@@ -311,7 +276,7 @@ Here is an example of chat completion with emojification:
 llama-chat-completion([ system => $preEmojify, user => 'Python sucks, Raku rocks, and Perl is annoying'], max-tokens => 200, format => 'values')
 ```
 ```
-# Python 😕, Raku 😍, and Perl 🙄
+# 🐍💥
 ```
 
 -------

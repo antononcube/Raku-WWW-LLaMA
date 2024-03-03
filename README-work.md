@@ -67,7 +67,7 @@ Here is a simple call for a "chat completion":
 
 ```perl6
 use WWW::LLaMA;
-llama-playground('Where is Roger Rabbit?');
+llama-playground('What is the speed of a rocket leaving Earth?');
 ```
 
 Another one using Bulgarian:
@@ -82,11 +82,14 @@ llama-playground('Колко групи могат да се намерят в �
 
 ### Models
 
-The current LLaMA models can be found with the function `llama-models`:
+The current LLaMA model can be found with the function `llama-model`:
 
 ```perl6
-llama-models;
+llama-model;
 ```
+
+**Remark:** Since there is no dedicated API endpoint for getting the model(s),
+the current model is obtained via "simple" (non-chat) completion.
 
 ### Code generation
 
