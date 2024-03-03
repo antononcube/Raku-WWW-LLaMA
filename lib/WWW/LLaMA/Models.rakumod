@@ -91,7 +91,13 @@ our sub LLaMAModels(
     #------------------------------------------------------
     # Retrieve
     #------------------------------------------------------
-    my Str $url = $base-url ~ '/models';
+    my Str $url = $base-url ~ '/completion';
 
-    return llama-request(:$url, body => '', :$auth-key, :$timeout, :$format, :$method);
+    my $body = to-json(%(prompt => '', n_predict => 1));
+    my $res = llama-request(:$url, :$body, :$auth-key, :$timeout, format => 'hash', :$method);
+
+    if $res ~~ Hash:D {
+        return $res<generation_settings><model>;
+    }
+     return $res;
 }
