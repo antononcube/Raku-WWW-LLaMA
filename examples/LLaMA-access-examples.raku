@@ -1,11 +1,16 @@
 #!/usr/bin/env raku
 use v6.d;
 
-use lib '.';
+use WWW::LLaMA;
 
-use LLaMA;
+say llama-text-completion(
+        "What is the min speed of a rocket leaving Earth?",
+        max-tokens => 90,
+        temperature => 0.3,
+        :cache-prompt,
+        format => 'values');
 
-say llama-playground("What is the min speed of a rocket leaving Earth?", format => Whatever, max-tokens => 900);
+#say llama-chat-completion("What is the min speed of a rocket leaving Earth?", format => 'values', max-tokens => 90);
 
 #say llama-playground("What is the min speed of a rocket leaving Earth?", format => Whatever, max-tokens => 900);
 
@@ -21,4 +26,4 @@ say llama-playground("What is the min speed of a rocket leaving Earth?", format 
 #
 #say '=' x 120;
 
-#say llama-embeddings('hello world'.words);
+#say llama-embedding('hello world'.words, format => 'values');
