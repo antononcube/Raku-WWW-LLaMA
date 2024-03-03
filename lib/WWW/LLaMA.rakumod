@@ -201,7 +201,7 @@ multi sub llama-playground($text is copy,
         when $_ ∈ <completion completions text/completion text/completions> {
             # my $url = 'https://127.0.0.1:8080/completion';
             # Find known parameters
-            my $expectedKeys = WWW::LLaMA::TextCompletions::LLaMATextCompletion.candidates.map({ $_.signature.params.map({ $_.usage-name }) }).flat;
+            my $expectedKeys = &WWW::LLaMA::TextCompletions::LLaMATextCompletion.candidates.map({ $_.signature.params.map({ $_.usage-name }) }).flat;
             $expectedKeys = $expectedKeys (-) $paramsForAll;
             return llama-text-completion($text,
                     |%args.grep({ $_.key ∈ $expectedKeys }).Hash,
@@ -210,7 +210,7 @@ multi sub llama-playground($text is copy,
         when $_ ∈ <infill code-infill> {
             # my $url = 'https://127.0.0.1:8080/infill';
             # Find known parameters
-            my $expectedKeys = WWW::LLaMA::TextCompletions::LLaMATextCompletion.candidates.map({ $_.signature.params.map({ $_.usage-name }) }).flat;
+            my $expectedKeys = &WWW::LLaMA::TextCompletions::LLaMATextCompletion.candidates.map({ $_.signature.params.map({ $_.usage-name }) }).flat;
             $expectedKeys = $expectedKeys (-) $paramsForAll;
             return llama-code-infill(
                     |%args.grep({ $_.key ∈ $expectedKeys }).Hash,
