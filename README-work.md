@@ -15,7 +15,11 @@ This package is very similar to the packages
 
 Also, of course, prompts from 
 ["LLM::Prompts"](https://github.com/antononcube/Raku-LLM-Prompts), [AAp4],
-can be used with MistralAI's functions.
+can be used with LLaMA's functions.
+
+**Remark:** The package "WWW::OpenAI" can be also used to access 
+["llamafile" chat completions](https://github.com/Mozilla-Ocho/llamafile/blob/main/llama.cpp/server/README.md#api-endpoints).
+That is done by specifying appropriate base URL to the `openai-chat-completion` function.
 
 -----
 
@@ -35,6 +39,16 @@ To install the package from the GitHub repository use the shell command:
 ```
 zef install https://github.com/antononcube/Raku-WWW-LLaMA.git
 ```
+
+----
+
+## Install and run LLaMA server
+
+In order to use the package access to LLaMA server is required.
+
+Since the package follows closely the Web API of ["llamafile"](https://github.com/Mozilla-Ocho/llamafile/), [MO1],
+it is advised to follow first the installation steps in the section of ["Quickstart"](https://github.com/Mozilla-Ocho/llamafile/tree/main#quickstart)
+of [MO1] before trying the functions of the package.
 
 ----
 
@@ -68,10 +82,10 @@ llama-playground('Колко групи могат да се намерят в �
 
 ### Models
 
-The current MistralAI models can be found with the function `llama-models`:
+The current LLaMA models can be found with the function `llama-models`:
 
 ```perl6
-*<id>.say for |llama-models;
+llama-models;
 ```
 
 ### Code generation
@@ -98,7 +112,7 @@ llama-completion(
 
 ### Embeddings
 
-Embeddings can be obtained with the function `llama-embeddings`. Here is an example of finding the embedding vectors
+Embeddings can be obtained with the function `llama-embedding`. Here is an example of finding the embedding vectors
 for each of the elements of an array of strings:
 
 ```perl6
@@ -109,7 +123,7 @@ my @queries = [
     'what is a good meat and potatoes recipe'
 ];
 
-my $embs = llama-embeddings(@queries, format => 'values', method => 'tiny');
+my $embs = llama-embedding(@queries, format => 'values', method => 'tiny');
 $embs.elems;
 ```
 
@@ -138,6 +152,21 @@ say to-pretty-table(cross-tabulate(@ct, 'i', 'j', 'dot'), field-names => (^$embs
 
 **Remark:** Note that the fourth element (the cooking recipe request) is an outlier.
 (Judging by the table with dot products.)
+
+### Tokenizing and de-tokenizing
+
+Here we tokenize some text:
+
+```perl6
+my $txt = @queries.head;
+my $res = llama-tokenize($txt, format => 'values');
+```
+
+Here we get the original text be de-tokenizing:
+
+```perl6
+llama-detokenize($res);
+```
 
 ### Chat completions with engineered prompts
 
@@ -190,7 +219,7 @@ graph TD
 	UI[/Some natural language text/]
 	TO[/"LLaMA<br/>Processed output"/]
 	WR[[Web request]]
-	LLaMA{{http://127.0.0.1:8080/v1}}
+	LLaMA{{http://127.0.0.1:8080}}
 	PJ[Parse JSON]
 	Q{Return<br>hash?}
 	MSTC[Compose query]
