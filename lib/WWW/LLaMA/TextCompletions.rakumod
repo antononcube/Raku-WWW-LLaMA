@@ -230,6 +230,9 @@ multi sub LLaMATextCompletion($prompt is copy,
     if !$input-prefix.isa(Whatever) { %body<input_prefix> = $input-prefix; }
     if !$input-suffix.isa(Whatever) { %body<input_suffix> = $input-suffix; }
     if !$penalty-prompt.isa(Whatever) { %body<penalty_prompt> = $penalty-prompt; }
+    if !$slot-id.isa(Whatever) { %body<slot_id> = $slot-id; }
+    if !$grammar.isa(Whatever) { %body<grammar> = $grammar; }
+    if !$seed.isa(Whatever) { %body<seed> = $seed; }
     if @image-data { %body<image_data> = @image-data; }
 
     my $url;
