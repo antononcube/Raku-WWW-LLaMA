@@ -79,8 +79,8 @@ multi sub LLaMAChatCompletion(@prompts is copy,
     # Process $max-tokens
     #------------------------------------------------------
     if $max-tokens.isa(Whatever) { $max-tokens = -1; }
-    die "The argument \$max-tokens is expected to be Whatever or a positive integer."
-    unless $max-tokens ~~ Int && 0 < $max-tokens;
+    die "The argument \$max-tokens is expected to be Whatever or an integer greater than -1."
+    unless $max-tokens ~~ Int && -1 ≤ $max-tokens;
 
     #------------------------------------------------------
     # Process $top-p
