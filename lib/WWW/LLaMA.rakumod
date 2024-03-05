@@ -11,8 +11,23 @@ use WWW::LLaMA::Models;
 use WWW::LLaMA::Request;
 
 #===========================================================
-#| Gives the base URL of llamafile's endpoints.
-our sub llama-base-url(-->Str) is export { return 'http://127.0.0.1:8080';}
+our $base-url = 'http://127.0.0.1:8080';
+
+#| Gives or sets the base URL of the LLaMA endpoints.
+our proto sub llama-base-url(|-->Str) is export {*}
+
+multi sub llama-base-url(Str $url-->Str) {
+    $base-url = $url;
+    return $url;
+}
+
+multi sub llama-base-url(Whatever-->Str) is export {
+    return llama-base-url('http://127.0.0.1:8080');
+}
+
+multi sub llama-base-url(-->Str) {
+    return $base-url;
+}
 
 
 #===========================================================
@@ -28,6 +43,7 @@ our sub llama-base-url(-->Str) is export { return 'http://127.0.0.1:8080';}
 #| C<:$timeout> -- timeout;
 #| C<:$format> -- format to use in answers post processing, one of <values json hash asis>);
 #| C<:$method> -- method to WWW API call with, one of <curl tiny>.
+#| C<:$base-url> -- URL of the LLaMA server.
 sub llama-completion(**@args, *%args) is export {
    return llama-chat-completion(|@args, |%args);
 }
@@ -45,6 +61,7 @@ sub llama-completion(**@args, *%args) is export {
 #| C<:$timeout> -- timeout;
 #| C<:$format> -- format to use in answers post processing, one of <values json hash asis>);
 #| C<:$method> -- method to WWW API call with, one of <curl tiny>.
+#| C<:$base-url> -- URL of the LLaMA server.
 our proto llama-text-completion(|) is export {*}
 
 multi sub llama-text-completion(**@args, *%args) {
@@ -64,6 +81,7 @@ multi sub llama-text-completion(**@args, *%args) {
 #| C<:$timeout> -- timeout;
 #| C<:$format> -- format to use in answers post processing, one of <values json hash asis>);
 #| C<:$method> -- method to WWW API call with, one of <curl tiny>.
+#| C<:$base-url> -- URL of the LLaMA server.
 our proto llama-code-infill(|) is export {*}
 
 multi sub llama-code-infill(*%args) {
@@ -87,10 +105,13 @@ multi sub llama-code-infill(*%args) {
 #| C<:$timeout> -- timeout;
 #| C<:$format> -- format to use in answers post processing, one of <values json hash asis>);
 #| C<:$method> -- method to WWW API call with, one of <curl tiny>.
+#| C<:$base-url> -- URL of the LLaMA server.
 our proto llama-chat-completion(|) is export {*}
 
 multi sub llama-chat-completion(**@args, *%args) {
-    return WWW::LLaMA::ChatCompletions::LLaMAChatCompletion(|@args, |%args);
+    my %args2 = %args;
+    %args2<base-url> = %args<base-url> // llama-base-url;
+    return WWW::LLaMA::ChatCompletions::LLaMAChatCompletion(|@args, |%args2);
 }
 
 #===========================================================
@@ -101,10 +122,13 @@ multi sub llama-chat-completion(**@args, *%args) {
 #| C<:$timeout> -- timeout;
 #| C<:$format> -- format to use in answers post processing, one of <values json hash asis>);
 #| C<:$method> -- method to WWW API call with, one of <curl tiny>.
+#| C<:$base-url> -- URL of the LLaMA server.
 our proto llama-embedding(|) is export {*}
 
 multi sub llama-embedding(**@args, *%args) {
-    return WWW::LLaMA::Embeddings::LLaMAEmbeddings(|@args, |%args);
+    my %args2 = %args;
+    %args2<base-url> = %args<base-url> // llama-base-url;
+    return WWW::LLaMA::Embeddings::LLaMAEmbeddings(|@args, |%args2);
 }
 
 #===========================================================
@@ -112,10 +136,13 @@ multi sub llama-embedding(**@args, *%args) {
 #| C<$prompt> -- prompt to tokenize;
 #| C<:$timeout> -- timeout;
 #| C<:$method> -- method to WWW API call with, one of <curl tiny>.
+#| C<:$base-url> -- URL of the LLaMA server.
 our proto llama-tokenize(|) is export {*}
 
 multi sub llama-tokenize(**@args, *%args) {
-    return WWW::LLaMA::Tokenizing::LLaMATokenizing(|@args, type => 'tokenize', |%args);
+    my %args2 = %args;
+    %args2<base-url> = %args<base-url> // llama-base-url;
+    return WWW::LLaMA::Tokenizing::LLaMATokenizing(|@args, type => 'tokenize', |%args2);
 }
 
 #===========================================================
@@ -123,20 +150,26 @@ multi sub llama-tokenize(**@args, *%args) {
 #| C<$prompt> -- tokens to de-tokenize;
 #| C<:$timeout> -- timeout;
 #| C<:$method> -- method to WWW API call with, one of <curl tiny>.
+#| C<:$base-url> -- URL of the LLaMA server.
 our proto llama-detokenize(|) is export {*}
 
 multi sub llama-detokenize(**@args, *%args) {
-    return WWW::LLaMA::Tokenizing::LLaMATokenizing(|@args, type => 'detokenize', |%args);
+    my %args2 = %args;
+    %args2<base-url> = %args<base-url> // llama-base-url;
+    return WWW::LLaMA::Tokenizing::LLaMATokenizing(|@args, type => 'detokenize', |%args2);
 }
 
 #===========================================================
 #| LLaMA models access.
 #| C<:api-key($auth-key)> -- authorization key (API key);
 #| C<:$timeout> -- timeout.
+#| C<:$base-url> -- URL of the LLaMA server.
 our proto llama-model(|) is export {*}
 
 multi sub llama-model(*%args) {
-    return WWW::LLaMA::Models::LLaMAModels(|%args);
+    my %args2 = %args;
+    %args2<base-url> = %args<base-url> // llama-base-url;
+    return WWW::LLaMA::Models::LLaMAModels(|%args2);
 }
 
 #============================================================
@@ -149,6 +182,7 @@ multi sub llama-model(*%args) {
 #| C<:timeout> -- timeout
 #| C<:$format> -- format to use in answers post processing, one of <values json hash asis>);
 #| C<:$method> -- method to WWW API call with, one of <curl tiny>,
+#| C<:$base-url> -- URL of the LLaMA server.
 #| C<*%args> -- additional arguments, see C<llama-chat-completion> and C<llama-text-completion>.
 our proto llama-playground($text is copy = '',
                            Str :$path = 'completions',
@@ -156,7 +190,7 @@ our proto llama-playground($text is copy = '',
                            UInt :$timeout= 10,
                            :$format is copy = Whatever,
                            Str :$method = 'tiny',
-                           Str :$base-url = 'http://127.0.0.1:8080',
+                           Str :$base-url = llama-base-url,
                            *%args
                            ) is export {*}
 
@@ -177,7 +211,7 @@ multi sub llama-playground($text is copy,
                            UInt :$timeout= 10,
                            :$format is copy = Whatever,
                            Str :$method = 'tiny',
-                           Str :$base-url = 'http://127.0.0.1:8080',
+                           Str :$base-url = llama-base-url,
                            *%args
                            ) {
 
