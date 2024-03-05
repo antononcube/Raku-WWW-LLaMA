@@ -93,7 +93,7 @@ our sub LLaMAModels(
     #------------------------------------------------------
     my Str $url = $base-url ~ '/completion';
 
-    my $body = to-json(%(prompt => '', n_predict => 1));
+    my $body = to-json(%(prompt => 'So', n_predict => 1));
     my $res = llama-request(:$url, :$body, :$auth-key, :$timeout, format => 'hash', :$method);
 
     if $res ~~ Hash:D {
