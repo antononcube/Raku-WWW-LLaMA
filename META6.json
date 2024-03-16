@@ -1,7 +1,7 @@
 {
   "name": "WWW::LLaMA",
   "description": "WWW::LLaMA provides access to the LLaMA playground.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "perl": "6.d",
   "authors": [
     "Anton Antonov"
