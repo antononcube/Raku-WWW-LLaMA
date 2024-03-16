@@ -200,11 +200,6 @@ multi sub llama-playground(*%args) {
 }
 
 #| LLaMA playground access.
-multi sub llama-playground(@texts, *%args) {
-    return @texts.map({ llama-playground($_, |%args) });
-}
-
-#| LLaMA playground access.
 multi sub llama-playground($text is copy,
                            Str :$path = 'completion',
                            :api-key(:$auth-key) is copy = Whatever,
@@ -214,6 +209,14 @@ multi sub llama-playground($text is copy,
                            Str :$base-url = llama-base-url,
                            *%args
                            ) {
+
+    #------------------------------------------------------
+    # Array argument handling
+    #------------------------------------------------------
+
+    if ($text ~~ Iterable) && $path.lc ∉ <de-tokenizing detokenizing detokenize de-tokenize> {
+        return $text.map({ llama-playground($_, :$path, :$auth-key, :$timeout, :$format, :$method, :$base-url, |%args) });
+    }
 
     #------------------------------------------------------
     # Dispatch
@@ -253,6 +256,17 @@ multi sub llama-playground($text is copy,
             # my $url = 'http://127.0.0.1:8080/embeddings';
             return llama-embedding($text,
                     |%args.grep({ $_.key ∈ <model encoding-format> }).Hash,
+                    :$auth-key, :$timeout, :$format, :$method, :$base-url);
+        }
+        when $_ ∈ <tokens tokenize tokenizing> {
+            # my $url = 'http://127.0.0.1:8080/tokenize';
+            return llama-tokenize($text,
+                    :$auth-key, :$timeout, :$format, :$method, :$base-url);
+        }
+        when $_ ∈ <de-tokenizing detokenizing detokenize de-tokenize> {
+            # my $url = 'http://127.0.0.1:8080/detokenize';
+            note (:$text);
+            return llama-detokenize($text,
                     :$auth-key, :$timeout, :$format, :$method, :$base-url);
         }
         default {
