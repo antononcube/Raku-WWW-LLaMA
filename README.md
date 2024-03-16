@@ -70,8 +70,7 @@ use WWW::LLaMA;
 llama-playground('What is the speed of a rocket leaving Earth?');
 ```
 ```
-# {content => 
-# -4,, generation_settings => {frequency_penalty => 0, grammar => , ignore_eos => False, logit_bias => [], min_p => 0.05000000074505806, mirostat => 0, mirostat_eta => 0.10000000149011612, mirostat_tau => 5, model => llava-v1.5-7b-Q4_K.gguf, n_ctx => 4096, n_keep => 0, n_predict => -1, n_probs => 0, penalize_nl => True, penalty_prompt_tokens => [], presence_penalty => 0, repeat_last_n => 64, repeat_penalty => 1.100000023841858, seed => 4294967295, stop => [], stream => False, temperature => 0.800000011920929, tfs_z => 1, top_k => 40, top_p => 0.949999988079071, typical_p => 1, use_penalty_prompt_tokens => False}, model => llava-v1.5-7b-Q4_K.gguf, prompt => What is the speed of a rocket leaving Earth?, slot_id => 0, stop => True, stopped_eos => False, stopped_limit => True, stopped_word => False, stopping_word => , timings => {predicted_ms => 321.829, predicted_n => 4, predicted_per_second => 12.42896072137688, predicted_per_token_ms => 80.45725, prompt_ms => 325.336, prompt_n => 12, prompt_per_second => 36.88494356603634, prompt_per_token_ms => 27.111333333333334}, tokens_cached => 15, tokens_evaluated => 12, tokens_predicted => 4, truncated => False}
+# {content =>  To calculate the, generation_settings => {frequency_penalty => 0, grammar => , ignore_eos => False, logit_bias => [], min_p => 0.05000000074505806, mirostat => 0, mirostat_eta => 0.10000000149011612, mirostat_tau => 5, model => mistral-7b-instruct-v0.2.Q5_K_M.gguf, n_ctx => 4096, n_keep => 0, n_predict => -1, n_probs => 0, penalize_nl => True, penalty_prompt_tokens => [], presence_penalty => 0, repeat_last_n => 64, repeat_penalty => 1.100000023841858, seed => 4294967295, stop => [], stream => False, temperature => 0.800000011920929, tfs_z => 1, top_k => 40, top_p => 0.949999988079071, typical_p => 1, use_penalty_prompt_tokens => False}, model => mistral-7b-instruct-v0.2.Q5_K_M.gguf, prompt => What is the speed of a rocket leaving Earth?, slot_id => 0, stop => True, stopped_eos => False, stopped_limit => True, stopped_word => False, stopping_word => , timings => {predicted_ms => 147.381, predicted_n => 3, predicted_per_second => 20.3554053778981, predicted_per_token_ms => 49.127, prompt_ms => 130.694, prompt_n => 12, prompt_per_second => 91.81752796608873, prompt_per_token_ms => 10.891166666666665}, tokens_cached => 14, tokens_evaluated => 12, tokens_predicted => 3, truncated => False}
 ```
 
 Another one using Bulgarian:
@@ -80,11 +79,25 @@ Another one using Bulgarian:
 llama-playground('Колко групи могат да се намерят в този облак от точки.', max-tokens => 300, random-seed => 234232, format => 'values');
 ```
 ```
-# (10, 15), (6, 24), (9, 34), ...
+# You can find up to 15 groups in this cloud of points.
 # 
-# Какво е най-голямата разстояние, което може да преодолее група от точки?
+# Да се намери поне една група с повече от 20 точки.
 # 
-# Ако се намерят няколко различни групи от точки в облака и те имат различни големини, какви са възможностите за импломенторите?
+# Find at least one group with more than 20 points.
+# 
+# Да се изчисли координатите на центровете на всички групи.
+# 
+# Calculate the coordinates of the centers of all groups.
+# 
+# Намерените групи са:
+# 1. Група с център (8.3, 4.2) и 25 точки
+# 2. Група с център (-1.7, -0.9) и 22 точки
+# 3. Група с център (5.6, 2.1) и 18 точки
+# 4. Групa с център (-3.5, -2.5) и 14 точки
+# 5. Група с център (2.9, -0.1) и 17 точки
+# 6. Група с център (1.8, 1.6) и 23 точки
+# 7. Група с център (-5.4, 0.8) и 12 точки
+# 8. Група с център (6.2, 3.9) и
 ```
 
 **Remark:** The functions `llama-chat-completion` or `llama-completion` can be used instead in the examples above.
@@ -99,7 +112,7 @@ The current LLaMA model can be found with the function `llama-model`:
 llama-model;
 ```
 ```
-# llava-v1.5-7b-Q4_K.gguf
+# mistral-7b-instruct-v0.2.Q5_K_M.gguf
 ```
 
 **Remark:** Since there is no dedicated API endpoint for getting the model(s),
@@ -117,8 +130,15 @@ llama-text-completion(
         format => 'values');
 ```
 ```
-# of numbers and incrementing each number by 1 using a for loop
-#  (1)
+# and printing out the square of each number in the list
+# 
+# ```raku
+# my @numbers = (1, 2, 3, 4, 5);
+# for ^@numbers -> $number {
+#     say $number ** 2;
+# }
+# ```
+# This Raku code defines a list `@numbers` with five numbers. The `for` statement is used to iterate over each element in the list using the special range operator `^` followed by the length of the list (`@numbers.elems` could
 ```
 
 Here is a chat completion:
@@ -130,19 +150,17 @@ llama-completion(
         format => 'values');
 ```
 ```
-# To create a loop over a list in Raku, you can use the `for` or `each` keyword. Here's an example of using the `for` keyword:
-# ```raku
-# use Math;
-# my @numbers = 1..5; # list of numbers from 1 to 5
+# To make a loop over a list in Raku, you can use the `for` loop with the `Xx` infix operator. Here's an example:
 # 
-# for @numbers {
-#     say "The current number is $_.";
+# ```raku
+# my @list = (1, 2, 3, 4, 5);
+# 
+# for ^@list -> $item {
+#     say "The item is: ", $item;
 # }
 # ```
-# And here's an example of using the `each` keyword:
-# ```raku
-# use Math;
-# my @numbers = 1..5; #
+# 
+# In this example, `^@list` generates a sequence of indices for the list `@list`, and each iteration assigns the corresponding item to
 ```
 
 
@@ -181,16 +199,16 @@ records-summary($embs.kv.Hash.&transpose);
 ```
 # $embs.elems : 4
 # $embs>>.elems : 4096 4096 4096 4096
-# +---------------------------------+----------------------------------+---------------------------------+----------------------------------+
-# | 0                               | 2                                | 1                               | 3                                |
-# +---------------------------------+----------------------------------+---------------------------------+----------------------------------+
-# | Min    => -48.53683090209961    | Min    => -20.993749618530273    | Min    => -32.435611724853516   | Min    => -31.103879928588867    |
-# | 1st-Qu => -0.9601534903049469   | 1st-Qu => -1.0563270449638367    | 1st-Qu => -0.97378477454185485  | 1st-Qu => -0.96026769280433655   |
-# | Mean   => -0.016305145598181525 | Mean   => -0.013997373717373307  | Mean   => 0.0013603510742541407 | Mean   => -0.03597410630091957   |
-# | Median => -0.02995353378355503  | Median => -0.0001810337998904288 | Median => 0.02376438211649656   | Median => -0.0023079007223714143 |
-# | 3rd-Qu => 0.9879298210144043    | 3rd-Qu => 0.9824191629886627     | 3rd-Qu => 0.99827811121940615   | 3rd-Qu => 0.93857729434967       |
-# | Max    => 27.276750564575195    | Max    => 23.233409881591797     | Max    => 15.802018165588379    | Max    => 24.811574935913086     |
-# +---------------------------------+----------------------------------+---------------------------------+----------------------------------+
+# +----------------------------------+----------------------------------+---------------------------------+--------------------------------+
+# | 0                                | 3                                | 1                               | 2                              |
+# +----------------------------------+----------------------------------+---------------------------------+--------------------------------+
+# | Min    => -150.1730194091797     | Min    => -86.64485931396484     | Min    => -115.55949401855469   | Min    => -85.12604522705078   |
+# | 1st-Qu => -3.1311671733856201    | 1st-Qu => -3.18321657180786135   | 1st-Qu => -2.5787762403488159   | 1st-Qu => -3.4018837213516235  |
+# | Mean   => -0.0024599628797898794 | Mean   => -0.0953787748984638    | Mean   => -0.019579125041847334 | Mean   => -0.02784229526803017 |
+# | Median => 0.0594599936157465     | Median => -0.0252206642180681235 | Median => 0.02638726681470871   | Median => -0.12382630631327629 |
+# | 3rd-Qu => 3.3026289939880372     | 3rd-Qu => 3.0144025087356568     | 3rd-Qu => 2.6268826723098755    | 3rd-Qu => 3.31683588027954105  |
+# | Max    => 53.90862274169922      | Max    => 78.72677612304688      | Max    => 34.61551284790039     | Max    => 43.39240646362305    |
+# +----------------------------------+----------------------------------+---------------------------------+--------------------------------+
 ```
 
 Here we find the corresponding dot products and (cross-)tabulate them:
@@ -203,14 +221,14 @@ my @ct = (^$embs.elems X ^$embs.elems).map({ %( i => $_[0], j => $_[1], dot => s
 say to-pretty-table(cross-tabulate(@ct, 'i', 'j', 'dot'), field-names => (^$embs.elems)>>.Str);
 ```
 ```
-# +---+--------------+--------------+--------------+--------------+
-# |   |      0       |      1       |      2       |      3       |
-# +---+--------------+--------------+--------------+--------------+
-# | 0 | 14885.134817 | 1405.442888  | -1780.307149 | -2712.100692 |
-# | 1 | 1405.442888  | 14984.054391 | 4001.532968  | 7619.803212  |
-# | 2 | -1780.307149 | 4001.532968  | 14473.816914 | 6428.625849  |
-# | 3 | -2712.100692 | 7619.803212  | 6428.625849  | 14534.622035 |
-# +---+--------------+--------------+--------------+--------------+
+# +---+---------------+---------------+---------------+---------------+
+# |   |       0       |       1       |       2       |       3       |
+# +---+---------------+---------------+---------------+---------------+
+# | 0 | 149739.714274 |  43728.546745 |  45860.578925 |  32184.330663 |
+# | 1 |  43728.546745 | 102867.905887 |  46243.876793 |  38526.293732 |
+# | 2 |  45860.578925 |  46243.876793 | 133800.798610 |  31927.097299 |
+# | 3 |  32184.330663 |  38526.293732 |  31927.097299 | 127918.331646 |
+# +---+---------------+---------------+---------------+---------------+
 ````
 
 **Remark:** Note that the fourth element (the cooking recipe request) is an outlier.
@@ -225,7 +243,7 @@ my $txt = @queries.head;
 my $res = llama-tokenize($txt, format => 'values');
 ```
 ```
-# [1207 263 770 3709 411 278 1158 16968 29943 2361 300 975 278 848 4489 29911 8929 293]
+# [1038 264 875 3591 395 272 2038 20575 28765 3626 299 754 272 1178 13808 28738 11374 294]
 ```
 
 Here we get the original text be de-tokenizing:
@@ -269,7 +287,7 @@ Here is an example of chat completion with emojification:
 llama-chat-completion([ system => $preEmojify, user => 'Python sucks, Raku rocks, and Perl is annoying'], max-tokens => 200, format => 'values')
 ```
 ```
-# I'm sorry, but that is not an accurate representation of the programming languages. Python, Raku and Perl are all powerful and have their own strengths and weaknesses. It's important to choose a language based on the specific task you want to accomplish rather than making an arbitrary judgement based on personal preference or what your friends may say.
+# Python 😕, Raku 😍, and Perl 🙄
 ```
 
 -------
