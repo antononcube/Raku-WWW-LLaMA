@@ -97,7 +97,7 @@ There are two types of completions : text and chat. Let us illustrate the differ
 of their usage by Raku code generation. Here is a text completion:
 
 ```perl6
-llama-completion(
+llama-text-completion(
         'generate Raku code for making a loop over a list',
         max-tokens => 120,
         format => 'values');

@@ -70,8 +70,7 @@ use WWW::LLaMA;
 llama-playground('What is the speed of a rocket leaving Earth?');
 ```
 ```
-# {content => 
-# , and how does it change as the rocket's altitude increases?, generation_settings => {frequency_penalty => 0, grammar => , ignore_eos => False, logit_bias => [], min_p => 0.05000000074505806, mirostat => 0, mirostat_eta => 0.10000000149011612, mirostat_tau => 5, model => llava-v1.5-7b-Q4_K.gguf, n_ctx => 1365, n_keep => 0, n_predict => -1, n_probs => 0, penalize_nl => True, penalty_prompt_tokens => [], presence_penalty => 0, repeat_last_n => 64, repeat_penalty => 1.100000023841858, seed => 4294967295, stop => [], stream => False, temperature => 0.800000011920929, tfs_z => 1, top_k => 40, top_p => 0.949999988079071, typical_p => 1, use_penalty_prompt_tokens => False}, model => llava-v1.5-7b-Q4_K.gguf, prompt => What is the speed of a rocket leaving Earth?, slot_id => 0, stop => True, stopped_eos => True, stopped_limit => False, stopped_word => False, stopping_word => , timings => {predicted_ms => 340.544, predicted_n => 18, predicted_per_second => 52.8566059011464, predicted_per_token_ms => 18.91911111111111, prompt_ms => 94.65, prompt_n => 12, prompt_per_second => 126.78288431061804, prompt_per_token_ms => 7.8875}, tokens_cached => 29, tokens_evaluated => 12, tokens_predicted => 18, truncated => False}
+# {content =>  The speed of, generation_settings => {frequency_penalty => 0, grammar => , ignore_eos => False, logit_bias => [], min_p => 0.05000000074505806, mirostat => 0, mirostat_eta => 0.10000000149011612, mirostat_tau => 5, model => mistral-7b-instruct-v0.2.Q5_K_M.gguf, n_ctx => 4096, n_keep => 0, n_predict => -1, n_probs => 0, penalize_nl => True, penalty_prompt_tokens => [], presence_penalty => 0, repeat_last_n => 64, repeat_penalty => 1.100000023841858, seed => 4294967295, stop => [], stream => False, temperature => 0.800000011920929, tfs_z => 1, top_k => 40, top_p => 0.949999988079071, typical_p => 1, use_penalty_prompt_tokens => False}, model => mistral-7b-instruct-v0.2.Q5_K_M.gguf, prompt => What is the speed of a rocket leaving Earth?, slot_id => 0, stop => True, stopped_eos => False, stopped_limit => True, stopped_word => False, stopping_word => , timings => {predicted_ms => 150.268, predicted_n => 3, predicted_per_second => 19.964330396358505, predicted_per_token_ms => 50.089333333333336, prompt_ms => 188.056, prompt_n => 12, prompt_per_second => 63.810779767728754, prompt_per_token_ms => 15.671333333333335}, tokens_cached => 14, tokens_evaluated => 12, tokens_predicted => 3, truncated => False}
 ```
 
 Another one using Bulgarian:
@@ -80,9 +79,25 @@ Another one using Bulgarian:
 llama-playground('Колко групи могат да се намерят в този облак от точки.', max-tokens => 300, random-seed => 234232, format => 'values');
 ```
 ```
-# Например, група от 50 звезди може да се намери в този облак от 100 000 звезди, които са разпределени на различни места. За да се намерят всичките, е необходимо да се използва алгоритъм за търсене на най-близките съседи на всеки от обектите.
+# A cloud that has a spherical shape with a diameter of 10 meters and a density of 1 g/m$^3$ contains water droplets. The average mass of each water droplet is 10$^{-6}$ kg. How many droplets are there in the cloud?
 # 
-# Въпреки че теоретично това може да бъде постигнато, реално това е много трудно и сложно, особено когато се има предвид голям брой звезди в облака.
+# To find the number of droplets in the cloud, we first need to find the volume of the cloud and then use that to calculate the number of droplets.
+# 
+# The formula for the volume of a sphere is:
+# 
+# $V = \frac{4}{3}πr^3$
+# 
+# where r is the radius of the sphere. In this case, the diameter is given as 10 meters, so the radius is half of that:
+# 
+# $r = \frac{diameter}{2} = \frac{10}{2} = 5\ m$
+# 
+# Now we can calculate the volume of the cloud:
+# 
+# $V = \frac{4}{3}π(5)^3 = \frac{4}{3}π(125) = 523.6\ m^3$
+# 
+# Next, we need to find the mass of water in the cloud. Since the density is given as 1 g/m$^3$, the mass of water in the cloud is:
+# 
+# $M = \rho V = 1\
 ```
 
 **Remark:** The functions `llama-chat-completion` or `llama-completion` can be used instead in the examples above.
@@ -97,7 +112,7 @@ The current LLaMA model can be found with the function `llama-model`:
 llama-model;
 ```
 ```
-# llava-v1.5-7b-Q4_K.gguf
+# mistral-7b-instruct-v0.2.Q5_K_M.gguf
 ```
 
 **Remark:** Since there is no dedicated API endpoint for getting the model(s),
@@ -109,21 +124,23 @@ There are two types of completions : text and chat. Let us illustrate the differ
 of their usage by Raku code generation. Here is a text completion:
 
 ```perl6
-llama-completion(
+llama-text-completion(
         'generate Raku code for making a loop over a list',
         max-tokens => 120,
         format => 'values');
 ```
 ```
-# Here's an example of Raku code for making a loop over a list:
-# ```
-# my @numbers = (1, 2, 3, 4, 5);
+# and print the cube of each number in that list
 # 
-# for @numbers -> $number {
-#     say "The number is $number.";
+# ```raku
+# my @numbers = <1 2 3 4 5>;
+# 
+# for ^@numbers -> $number {
+#     say $number**3;
 # }
 # ```
-# This will print the numbers in the list, one by one. The `->` operator is used to bind the value of each element in the list to a variable, and the `{}` block is used to define the code that should be executed for each iteration of the loop.
+# 
+# This Raku code creates a list `@numbers` with five elements, then uses a for loop to iterate over each element in the list. The variable `$number` represents the current number being processed during the iteration. The caret (`^`) before `@numbers`
 ```
 
 Here is a chat completion:
@@ -135,21 +152,16 @@ llama-completion(
         format => 'values');
 ```
 ```
-# Here's an example of a loop over a list in Raku:
-# ```perl
-# my @list = (1, 2, 3, 4, 5);
+# Here's a simple example of how you can loop over a list in Raku:
 # 
-# for @list -> $item {
-#     say "The value of $item is $item.";
+# ```raku
+# my @list = (1, 2, 3, 4, 5); # Initialize a list
+# 
+# for my $element @list {
+#     say "Element is: ", $element; # Do something with each element
 # }
 # ```
-# This will output:
-# ```sql
-# The value of 1 is 1.
-# The value of 2 is 2.
-# The value of 3 is 3.
-# The value of 4 is 4.
-# The value of 5
+# In this example, `@list` is the list that we want to loop over. The `for` loop goes through each element in the list and assigns it to the variable `$element
 ```
 
 
@@ -188,16 +200,16 @@ records-summary($embs.kv.Hash.&transpose);
 ```
 # $embs.elems : 4
 # $embs>>.elems : 4096 4096 4096 4096
-# +--------------------------------+----------------------------------+---------------------------------+-----------------------------------+
-# | 1                              | 2                                | 0                               | 3                                 |
-# +--------------------------------+----------------------------------+---------------------------------+-----------------------------------+
-# | Min    => -30.241486           | Min    => -20.993749618530273    | Min    => -32.435486            | Min    => -31.10381317138672      |
-# | 1st-Qu => -0.7924895882606506  | 1st-Qu => -1.0563270449638367    | 1st-Qu => -0.9738395810127258   | 1st-Qu => -0.9602127969264984     |
-# | Mean   => 0.001538657780784547 | Mean   => -0.013997373717373307  | Mean   => 0.0013605252470370028 | Mean   => -0.03597712098735428    |
-# | Median => 0.016784800216555596 | Median => -0.0001810337998904288 | Median => 0.023735892958939075  | Median => -0.00221119043999351575 |
-# | 3rd-Qu => 0.77385222911834715  | 3rd-Qu => 0.9824191629886627     | 3rd-Qu => 0.9983229339122772    | 3rd-Qu => 0.9385882616043091      |
-# | Max    => 25.732345581054688   | Max    => 23.233409881591797     | Max    => 15.80211067199707     | Max    => 24.811737               |
-# +--------------------------------+----------------------------------+---------------------------------+-----------------------------------+
+# +---------------------------------+----------------------------------+----------------------------------+--------------------------------+
+# | 1                               | 3                                | 0                                | 2                              |
+# +---------------------------------+----------------------------------+----------------------------------+--------------------------------+
+# | Min    => -115.55949401855469   | Min    => -86.64485931396484     | Min    => -150.1730194091797     | Min    => -85.12604522705078   |
+# | 1st-Qu => -2.5787762403488159   | 1st-Qu => -3.18321657180786135   | 1st-Qu => -3.1311671733856201    | 1st-Qu => -3.4018837213516235  |
+# | Mean   => -0.019579125041847334 | Mean   => -0.0953787748984638    | Mean   => -0.0024599628797898794 | Mean   => -0.02784229526803017 |
+# | Median => 0.02638726681470871   | Median => -0.0252206642180681235 | Median => 0.0594599936157465     | Median => -0.12382630631327629 |
+# | 3rd-Qu => 2.6268826723098755    | 3rd-Qu => 3.0144025087356568     | 3rd-Qu => 3.3026289939880372     | 3rd-Qu => 3.31683588027954105  |
+# | Max    => 34.61551284790039     | Max    => 78.72677612304688      | Max    => 53.90862274169922      | Max    => 43.39240646362305    |
+# +---------------------------------+----------------------------------+----------------------------------+--------------------------------+
 ```
 
 Here we find the corresponding dot products and (cross-)tabulate them:
@@ -210,14 +222,14 @@ my @ct = (^$embs.elems X ^$embs.elems).map({ %( i => $_[0], j => $_[1], dot => s
 say to-pretty-table(cross-tabulate(@ct, 'i', 'j', 'dot'), field-names => (^$embs.elems)>>.Str);
 ```
 ```
-# +---+--------------+--------------+--------------+--------------+
-# |   |      0       |      1       |      2       |      3       |
-# +---+--------------+--------------+--------------+--------------+
-# | 0 | 14984.053717 | 1708.345468  | 4001.487938  | 7619.791201  |
-# | 1 | 1708.345468  | 10992.176167 | -1364.137315 | -2970.554539 |
-# | 2 | 4001.487938  | -1364.137315 | 14473.816914 | 6428.638382  |
-# | 3 | 7619.791201  | -2970.554539 | 6428.638382  | 14534.609050 |
-# +---+--------------+--------------+--------------+--------------+
+# +---+---------------+---------------+---------------+---------------+
+# |   |       0       |       1       |       2       |       3       |
+# +---+---------------+---------------+---------------+---------------+
+# | 0 | 149739.714274 |  43728.546745 |  45860.578925 |  32184.330663 |
+# | 1 |  43728.546745 | 102867.905887 |  46243.876793 |  38526.293732 |
+# | 2 |  45860.578925 |  46243.876793 | 133800.798610 |  31927.097299 |
+# | 3 |  32184.330663 |  38526.293732 |  31927.097299 | 127918.331646 |
+# +---+---------------+---------------+---------------+---------------+
 ````
 
 **Remark:** Note that the fourth element (the cooking recipe request) is an outlier.
@@ -232,7 +244,7 @@ my $txt = @queries.head;
 my $res = llama-tokenize($txt, format => 'values');
 ```
 ```
-# [1207 263 770 3709 411 278 1158 16968 29943 2361 300 975 278 848 4489 29911 8929 293]
+# [1038 264 875 3591 395 272 2038 20575 28765 3626 299 754 272 1178 13808 28738 11374 294]
 ```
 
 Here we get the original text be de-tokenizing:
@@ -276,7 +288,7 @@ Here is an example of chat completion with emojification:
 llama-chat-completion([ system => $preEmojify, user => 'Python sucks, Raku rocks, and Perl is annoying'], max-tokens => 200, format => 'values')
 ```
 ```
-# 🐍💥
+# Python 🙁, Raku 😍, Perl 🙄
 ```
 
 -------
