@@ -2,6 +2,7 @@
 use v6.d;
 
 use WWW::LLaMA;
+use JSON::Fast;
 
 my %*SUB-MAIN-OPTS =
         :named-anywhere,
@@ -9,8 +10,8 @@ my %*SUB-MAIN-OPTS =
         ;
 
 #| Text processing using the LLaMA Web API.
-multi sub llama-front(Str $text,                                  #= Text to be processed or audio file name.
-                      Str :$path = 'chat/completions',            #= Path, one of 'completions', 'chat/completions', 'embeddings', or 'models'.
+multi sub llama-front(Str $text is copy,                          #= Text to be processed or audio file name.
+                      Str :$path = 'chat/completions',            #= Path, one of 'completions', 'chat/completions', 'embeddings', 'models', 'tokenize', and 'detokenize'.
                       Int :mt(:$max-tokens) = 2048,               #= The maximum number of tokens to generate in the completion.
                       Str :m(:$model) is copy = 'Whatever',       #= Model.
                       Str :r(:$role) is copy = 'user',            #= Role.
@@ -32,6 +33,16 @@ multi sub llama-front(Str $text,                                  #= Text to be 
         $base-url = 'http://127.0.0.1:8080';
     }
 
+    my $input = $text;
+    if $path.lc ∈ <de-tokenize detokenize> {
+       try {
+           $input = from-json($text);
+       }
+       if $! || $input !~~ Positional {
+            die "When --path is 'detokeinize' the first argument is expected to be a list of numbers in JSON format.";
+        }
+    }
+
     my $authKeyLocal = $auth-key;
     if $auth-key.lc ∈ <whatever none> {
         $authKeyLocal = Whatever
@@ -40,7 +51,7 @@ multi sub llama-front(Str $text,                                  #= Text to be 
     if $format.lc ∈ <v value auto whatever> { $format = 'values'; }
 
     my $res =
-            llama-playground($text,
+            llama-playground($input,
                     :$path,
                     model => $model eq 'Whatever' ?? Whatever !! $model,
                     role => $role eq 'Whatever' ?? Whatever !! $role,
@@ -63,7 +74,7 @@ multi sub llama-front(Str $text,                                  #= Text to be 
 multi sub MAIN
 #= Command given as a sequence of words.
 (*@words,
- Str :$path = 'chat/completions',            #= Path, one of ''completions', 'chat/completions', 'embeddings', or 'models'.
+ Str :$path = 'chat/completions',            #= Path, one of 'completions', 'chat/completions', 'embeddings', 'models', 'tokenize', and 'detokenize'.
  Int :mt(:$max-tokens) = 2048,               #= The maximum number of tokens to generate in the completion.
  Str :m(:$model) is copy = 'Whatever',       #= Model.
  Str :r(:$role) is copy = 'user',            #= Role.
