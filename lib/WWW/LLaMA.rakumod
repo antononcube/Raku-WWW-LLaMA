@@ -265,7 +265,6 @@ multi sub llama-playground($text is copy,
         }
         when $_ ∈ <de-tokenizing detokenizing detokenize de-tokenize> {
             # my $url = 'http://127.0.0.1:8080/detokenize';
-            note (:$text);
             return llama-detokenize($text,
                     :$auth-key, :$timeout, :$format, :$method, :$base-url);
         }
