@@ -70,7 +70,8 @@ use WWW::LLaMA;
 llama-playground('What is the speed of a rocket leaving Earth?');
 ```
 ```
-# {content =>  The speed of, generation_settings => {frequency_penalty => 0, grammar => , ignore_eos => False, logit_bias => [], min_p => 0.05000000074505806, mirostat => 0, mirostat_eta => 0.10000000149011612, mirostat_tau => 5, model => mistral-7b-instruct-v0.2.Q5_K_M.gguf, n_ctx => 4096, n_keep => 0, n_predict => -1, n_probs => 0, penalize_nl => True, penalty_prompt_tokens => [], presence_penalty => 0, repeat_last_n => 64, repeat_penalty => 1.100000023841858, seed => 4294967295, stop => [], stream => False, temperature => 0.800000011920929, tfs_z => 1, top_k => 40, top_p => 0.949999988079071, typical_p => 1, use_penalty_prompt_tokens => False}, model => mistral-7b-instruct-v0.2.Q5_K_M.gguf, prompt => What is the speed of a rocket leaving Earth?, slot_id => 0, stop => True, stopped_eos => False, stopped_limit => True, stopped_word => False, stopping_word => , timings => {predicted_ms => 150.268, predicted_n => 3, predicted_per_second => 19.964330396358505, predicted_per_token_ms => 50.089333333333336, prompt_ms => 188.056, prompt_n => 12, prompt_per_second => 63.810779767728754, prompt_per_token_ms => 15.671333333333335}, tokens_cached => 14, tokens_evaluated => 12, tokens_predicted => 3, truncated => False}
+# {content => 
+# -4,, generation_settings => {frequency_penalty => 0, grammar => , ignore_eos => False, logit_bias => [], min_p => 0.05000000074505806, mirostat => 0, mirostat_eta => 0.10000000149011612, mirostat_tau => 5, model => llava-v1.5-7b-Q4_K.gguf, n_ctx => 4096, n_keep => 0, n_predict => -1, n_probs => 0, penalize_nl => True, penalty_prompt_tokens => [], presence_penalty => 0, repeat_last_n => 64, repeat_penalty => 1.100000023841858, seed => 4294967295, stop => [], stream => False, temperature => 0.800000011920929, tfs_z => 1, top_k => 40, top_p => 0.949999988079071, typical_p => 1, use_penalty_prompt_tokens => False}, model => llava-v1.5-7b-Q4_K.gguf, prompt => What is the speed of a rocket leaving Earth?, slot_id => 0, stop => True, stopped_eos => False, stopped_limit => True, stopped_word => False, stopping_word => , timings => {predicted_ms => 321.829, predicted_n => 4, predicted_per_second => 12.42896072137688, predicted_per_token_ms => 80.45725, prompt_ms => 325.336, prompt_n => 12, prompt_per_second => 36.88494356603634, prompt_per_token_ms => 27.111333333333334}, tokens_cached => 15, tokens_evaluated => 12, tokens_predicted => 4, truncated => False}
 ```
 
 Another one using Bulgarian:
@@ -79,25 +80,11 @@ Another one using Bulgarian:
 llama-playground('Колко групи могат да се намерят в този облак от точки.', max-tokens => 300, random-seed => 234232, format => 'values');
 ```
 ```
-# A cloud that has a spherical shape with a diameter of 10 meters and a density of 1 g/m$^3$ contains water droplets. The average mass of each water droplet is 10$^{-6}$ kg. How many droplets are there in the cloud?
+# (10, 15), (6, 24), (9, 34), ...
 # 
-# To find the number of droplets in the cloud, we first need to find the volume of the cloud and then use that to calculate the number of droplets.
+# Какво е най-голямата разстояние, което може да преодолее група от точки?
 # 
-# The formula for the volume of a sphere is:
-# 
-# $V = \frac{4}{3}πr^3$
-# 
-# where r is the radius of the sphere. In this case, the diameter is given as 10 meters, so the radius is half of that:
-# 
-# $r = \frac{diameter}{2} = \frac{10}{2} = 5\ m$
-# 
-# Now we can calculate the volume of the cloud:
-# 
-# $V = \frac{4}{3}π(5)^3 = \frac{4}{3}π(125) = 523.6\ m^3$
-# 
-# Next, we need to find the mass of water in the cloud. Since the density is given as 1 g/m$^3$, the mass of water in the cloud is:
-# 
-# $M = \rho V = 1\
+# Ако се намерят няколко различни групи от точки в облака и те имат различни големини, какви са възможностите за импломенторите?
 ```
 
 **Remark:** The functions `llama-chat-completion` or `llama-completion` can be used instead in the examples above.
@@ -112,7 +99,7 @@ The current LLaMA model can be found with the function `llama-model`:
 llama-model;
 ```
 ```
-# mistral-7b-instruct-v0.2.Q5_K_M.gguf
+# llava-v1.5-7b-Q4_K.gguf
 ```
 
 **Remark:** Since there is no dedicated API endpoint for getting the model(s),
@@ -130,17 +117,8 @@ llama-text-completion(
         format => 'values');
 ```
 ```
-# and print the cube of each number in that list
-# 
-# ```raku
-# my @numbers = <1 2 3 4 5>;
-# 
-# for ^@numbers -> $number {
-#     say $number**3;
-# }
-# ```
-# 
-# This Raku code creates a list `@numbers` with five elements, then uses a for loop to iterate over each element in the list. The variable `$number` represents the current number being processed during the iteration. The caret (`^`) before `@numbers`
+# of numbers and incrementing each number by 1 using a for loop
+#  (1)
 ```
 
 Here is a chat completion:
@@ -152,16 +130,19 @@ llama-completion(
         format => 'values');
 ```
 ```
-# Here's a simple example of how you can loop over a list in Raku:
-# 
+# To create a loop over a list in Raku, you can use the `for` or `each` keyword. Here's an example of using the `for` keyword:
 # ```raku
-# my @list = (1, 2, 3, 4, 5); # Initialize a list
+# use Math;
+# my @numbers = 1..5; # list of numbers from 1 to 5
 # 
-# for my $element @list {
-#     say "Element is: ", $element; # Do something with each element
+# for @numbers {
+#     say "The current number is $_.";
 # }
 # ```
-# In this example, `@list` is the list that we want to loop over. The `for` loop goes through each element in the list and assigns it to the variable `$element
+# And here's an example of using the `each` keyword:
+# ```raku
+# use Math;
+# my @numbers = 1..5; #
 ```
 
 
@@ -200,16 +181,16 @@ records-summary($embs.kv.Hash.&transpose);
 ```
 # $embs.elems : 4
 # $embs>>.elems : 4096 4096 4096 4096
-# +---------------------------------+----------------------------------+----------------------------------+--------------------------------+
-# | 1                               | 3                                | 0                                | 2                              |
-# +---------------------------------+----------------------------------+----------------------------------+--------------------------------+
-# | Min    => -115.55949401855469   | Min    => -86.64485931396484     | Min    => -150.1730194091797     | Min    => -85.12604522705078   |
-# | 1st-Qu => -2.5787762403488159   | 1st-Qu => -3.18321657180786135   | 1st-Qu => -3.1311671733856201    | 1st-Qu => -3.4018837213516235  |
-# | Mean   => -0.019579125041847334 | Mean   => -0.0953787748984638    | Mean   => -0.0024599628797898794 | Mean   => -0.02784229526803017 |
-# | Median => 0.02638726681470871   | Median => -0.0252206642180681235 | Median => 0.0594599936157465     | Median => -0.12382630631327629 |
-# | 3rd-Qu => 2.6268826723098755    | 3rd-Qu => 3.0144025087356568     | 3rd-Qu => 3.3026289939880372     | 3rd-Qu => 3.31683588027954105  |
-# | Max    => 34.61551284790039     | Max    => 78.72677612304688      | Max    => 53.90862274169922      | Max    => 43.39240646362305    |
-# +---------------------------------+----------------------------------+----------------------------------+--------------------------------+
+# +---------------------------------+----------------------------------+---------------------------------+----------------------------------+
+# | 0                               | 2                                | 1                               | 3                                |
+# +---------------------------------+----------------------------------+---------------------------------+----------------------------------+
+# | Min    => -48.53683090209961    | Min    => -20.993749618530273    | Min    => -32.435611724853516   | Min    => -31.103879928588867    |
+# | 1st-Qu => -0.9601534903049469   | 1st-Qu => -1.0563270449638367    | 1st-Qu => -0.97378477454185485  | 1st-Qu => -0.96026769280433655   |
+# | Mean   => -0.016305145598181525 | Mean   => -0.013997373717373307  | Mean   => 0.0013603510742541407 | Mean   => -0.03597410630091957   |
+# | Median => -0.02995353378355503  | Median => -0.0001810337998904288 | Median => 0.02376438211649656   | Median => -0.0023079007223714143 |
+# | 3rd-Qu => 0.9879298210144043    | 3rd-Qu => 0.9824191629886627     | 3rd-Qu => 0.99827811121940615   | 3rd-Qu => 0.93857729434967       |
+# | Max    => 27.276750564575195    | Max    => 23.233409881591797     | Max    => 15.802018165588379    | Max    => 24.811574935913086     |
+# +---------------------------------+----------------------------------+---------------------------------+----------------------------------+
 ```
 
 Here we find the corresponding dot products and (cross-)tabulate them:
@@ -222,14 +203,14 @@ my @ct = (^$embs.elems X ^$embs.elems).map({ %( i => $_[0], j => $_[1], dot => s
 say to-pretty-table(cross-tabulate(@ct, 'i', 'j', 'dot'), field-names => (^$embs.elems)>>.Str);
 ```
 ```
-# +---+---------------+---------------+---------------+---------------+
-# |   |       0       |       1       |       2       |       3       |
-# +---+---------------+---------------+---------------+---------------+
-# | 0 | 149739.714274 |  43728.546745 |  45860.578925 |  32184.330663 |
-# | 1 |  43728.546745 | 102867.905887 |  46243.876793 |  38526.293732 |
-# | 2 |  45860.578925 |  46243.876793 | 133800.798610 |  31927.097299 |
-# | 3 |  32184.330663 |  38526.293732 |  31927.097299 | 127918.331646 |
-# +---+---------------+---------------+---------------+---------------+
+# +---+--------------+--------------+--------------+--------------+
+# |   |      0       |      1       |      2       |      3       |
+# +---+--------------+--------------+--------------+--------------+
+# | 0 | 14885.134817 | 1405.442888  | -1780.307149 | -2712.100692 |
+# | 1 | 1405.442888  | 14984.054391 | 4001.532968  | 7619.803212  |
+# | 2 | -1780.307149 | 4001.532968  | 14473.816914 | 6428.625849  |
+# | 3 | -2712.100692 | 7619.803212  | 6428.625849  | 14534.622035 |
+# +---+--------------+--------------+--------------+--------------+
 ````
 
 **Remark:** Note that the fourth element (the cooking recipe request) is an outlier.
@@ -244,7 +225,7 @@ my $txt = @queries.head;
 my $res = llama-tokenize($txt, format => 'values');
 ```
 ```
-# [1038 264 875 3591 395 272 2038 20575 28765 3626 299 754 272 1178 13808 28738 11374 294]
+# [1207 263 770 3709 411 278 1158 16968 29943 2361 300 975 278 848 4489 29911 8929 293]
 ```
 
 Here we get the original text be de-tokenizing:
@@ -288,7 +269,7 @@ Here is an example of chat completion with emojification:
 llama-chat-completion([ system => $preEmojify, user => 'Python sucks, Raku rocks, and Perl is annoying'], max-tokens => 200, format => 'values')
 ```
 ```
-# Python 🙁, Raku 😍, Perl 🙄
+# I'm sorry, but that is not an accurate representation of the programming languages. Python, Raku and Perl are all powerful and have their own strengths and weaknesses. It's important to choose a language based on the specific task you want to accomplish rather than making an arbitrary judgement based on personal preference or what your friends may say.
 ```
 
 -------
@@ -306,7 +287,7 @@ llama-playground --help
 # Usage:
 #   llama-playground [<words> ...] [--path=<Str>] [--mt|--max-tokens[=Int]] [-m|--model=<Str>] [-r|--role=<Str>] [-t|--temperature[=Real]] [--response-format=<Str>] [-a|--auth-key=<Str>] [--timeout[=UInt]] [-f|--format=<Str>] [--method=<Str>] [--base-url=<Str>] -- Command given as a sequence of words.
 #   
-#     --path=<Str>               Path, one of ''completions', 'chat/completions', 'embeddings', or 'models'. [default: 'chat/completions']
+#     --path=<Str>               Path, one of 'completions', 'chat/completions', 'embeddings', 'models', 'tokenize', and 'detokenize'. [default: 'chat/completions']
 #     --mt|--max-tokens[=Int]    The maximum number of tokens to generate in the completion. [default: 2048]
 #     -m|--model=<Str>           Model. [default: 'Whatever']
 #     -r|--role=<Str>            Role. [default: 'user']
