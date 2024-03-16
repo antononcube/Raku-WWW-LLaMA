@@ -20,6 +20,6 @@ ok llama-playground('What is the most important word in English today?', :$metho
 ok llama-playground('Generate Raku code for a loop over a list', path => 'completions', type => Whatever, model => Whatever, :$method);
 
 ## 4
-ok llama-playground('Generate Raku code for a loop over a list', path => 'chat/completions', model => 'mistral-medium', :$method);
+ok llama-playground('Generate Raku code for a loop over a list', path => 'chat/completions', model => 'llama', :$method);
 
 done-testing;

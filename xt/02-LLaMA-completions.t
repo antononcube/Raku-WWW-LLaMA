@@ -14,7 +14,7 @@ plan *;
 ok llama-completion('Generate Raku code for a loop over a list', model => Whatever, :$method);
 
 ## 2
-ok llama-completion('Generate Raku code for a loop over a list', model => 'mistral-small', :$method);
+ok llama-completion('Generate Raku code for a loop over a list', model => 'gpt-3.5-turbo', :$method);
 
 ## 3
 ok llama-completion('Generate Raku code for a loop over a list', model => Whatever, :$method);
@@ -28,6 +28,6 @@ dies-ok {
 };
 
 ## 6
-ok llama-completion('Generate Raku code for a loop over a list', model => 'mistral-medium', random-seed => 12, :$method);
+ok llama-completion('Generate Raku code for a loop over a list', model => 'llama', random-seed => 12, :$method);
 
 done-testing;
