@@ -32,7 +32,8 @@ our proto LLaMAChatCompletion($prompt is copy,
                               UInt :$timeout= 10,
                               :$format is copy = Whatever,
                               Str :$method = 'tiny',
-                              Str :$base-url = 'http://127.0.0.1:8080') is export {*}
+                              Str :$base-url = 'http://127.0.0.1:8080',
+                              Bool:D :$echo = False) is export {*}
 
 #| LLaMA completion access.
 multi sub LLaMAChatCompletion(Str $prompt, *%args) {
@@ -52,7 +53,8 @@ multi sub LLaMAChatCompletion(@prompts is copy,
                               UInt :$timeout= 10,
                               :$format is copy = Whatever,
                               Str :$method = 'tiny',
-                              Str :$base-url = 'http://127.0.0.1:8080') {
+                              Str :$base-url = 'http://127.0.0.1:8080',
+                              Bool:D :$echo = False) {
 
     #------------------------------------------------------
     # Process $role
@@ -131,5 +133,5 @@ multi sub LLaMAChatCompletion(@prompts is copy,
     # Delegate
     #------------------------------------------------------
 
-    return llama-request(:$url, body => to-json(%body), :$auth-key, :$timeout, :$format, :$method);
+    return llama-request(:$url, body => to-json(%body), :$auth-key, :$timeout, :$format, :$method, :$echo);
 }

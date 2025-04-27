@@ -18,7 +18,8 @@ our proto LLaMAEmbeddings($prompt,
                           UInt :$timeout= 10,
                           :$format is copy = Whatever,
                           Str :$method = 'tiny',
-                          Str :$base-url = 'http://127.0.0.1:8080'
+                          Str :$base-url = 'http://127.0.0.1:8080',
+                          Bool:D :$echo = False,
                           ) is export {*}
 
 
@@ -31,7 +32,9 @@ multi sub LLaMAEmbeddings($prompt,
                           UInt :$timeout= 10,
                           :$format is copy = Whatever,
                           Str :$method = 'tiny',
-                          Str :$base-url = 'http://127.0.0.1:8080') {
+                          Str :$base-url = 'http://127.0.0.1:8080',
+                          Bool:D :$echo = False,
+                          ) {
 
     #------------------------------------------------------
     # Process $model
@@ -65,12 +68,12 @@ multi sub LLaMAEmbeddings($prompt,
 
         return llama-request(:$url,
                 body => to-json(%body),
-                :$auth-key, :$timeout, :$format, :$method);
+                :$auth-key, :$timeout, :$format, :$method, :$echo);
 
     } else {
 
         return llama-request(:$url,
                 body => to-json(%body),
-                :$auth-key, :$timeout, :$format, :$method);
+                :$auth-key, :$timeout, :$format, :$method, :$echo);
     }
 }

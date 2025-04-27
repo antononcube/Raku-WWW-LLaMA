@@ -12,12 +12,13 @@ proto sub tiny-post(Str :$url!, |) is export {*}
 multi sub tiny-post(Str :$url!,
                     Str :$body!,
                     Str :api-key(:$auth-key)!,
-                    UInt :$timeout = 10) {
+                    UInt :$timeout = 10,
+                    Bool:D :$echo = False) {
     my $resp = HTTP::Tiny.post: $url,
             headers => { authorization => "Bearer $auth-key",
                          Content-Type => "application/json" },
             content => $body;
-
+    note $resp if $echo;
     return $resp<content>.decode;
 }
 
@@ -25,13 +26,15 @@ multi sub tiny-post(Str :$url!,
                     :$body! where *~~ Map,
                     Str :api-key(:$auth-key)!,
                     Bool :$json = False,
-                    UInt :$timeout = 10) {
+                    UInt :$timeout = 10,
+                    Bool:D :$echo = False) {
     if $json {
         return tiny-post(:$url, body => to-json($body), :$auth-key, :$timeout);
     }
     my $resp = HTTP::Tiny.post: $url,
             headers => { authorization => "Bearer $auth-key" },
             content => $body;
+    note $resp if $echo;
     return $resp<content>.decode;
 }
 
@@ -41,9 +44,11 @@ multi sub tiny-post(Str :$url!,
 
 multi sub tiny-get(Str :$url!,
                    Str :api-key(:$auth-key)!,
-                   UInt :$timeout = 10) {
+                   UInt :$timeout = 10,
+                   Bool:D :$echo = False) {
     my $resp = HTTP::Tiny.get: $url,
             headers => { authorization => "Bearer $auth-key" };
+    note $resp if $echo;
     return $resp<content>.decode;
 }
 
@@ -57,12 +62,14 @@ curl $URL \
   -d '$BODY'
 END
 
-multi sub curl-post(Str :$url!, Str :$body!, Str :api-key(:$auth-key)!, UInt :$timeout = 10) {
+multi sub curl-post(Str :$url!, Str :$body!, Str :api-key(:$auth-key)!, UInt :$timeout = 10, Bool:D :$echo = False) {
 
     my $textQuery = $curlQuery
             .subst('$URL', $url)
             .subst('$LLAMAFILE_API_KEY', $auth-key)
             .subst('$BODY', $body);
+
+    note $textQuery if $echo;
 
     my $proc = shell $textQuery, :out, :err;
 
@@ -80,7 +87,8 @@ END
 multi sub curl-post(Str :$url!,
                     :$body! where *~~ Map,
                     Str :api-key(:$auth-key)!,
-                    UInt :$timeout = 10) {
+                    UInt :$timeout = 10,
+                    Bool:D :$echo = False) {
 
     my $textQuery = $curlFormQuery
             .subst('$URL', $url)
@@ -91,6 +99,8 @@ multi sub curl-post(Str :$url!,
         my $sep = $k ∈ <file image mask> ?? '@' !! '';
         $textQuery ~= " \\\n  --form $k=$sep$v";
     }
+
+    note $textQuery if $echo;
 
     my $proc = shell $textQuery, :out, :err;
 
@@ -111,16 +121,18 @@ our proto llama-request(Str :$url!,
                             UInt :$timeout= 10,
                             :$format is copy = Whatever,
                             Str :$method = 'tiny',
+                            Bool:D :$echo
                             ) is export {*}
 
 #| LLaMA request access.
 multi sub llama-request(Str :$url!,
-                            :$body!,
-                            :api-key(:$auth-key) is copy = Whatever,
-                            UInt :$timeout= 10,
-                            :$format is copy = Whatever,
-                            Str :$method = 'tiny'
-                            ) {
+                        :$body!,
+                        :api-key(:$auth-key) is copy = Whatever,
+                        UInt :$timeout= 10,
+                        :$format is copy = Whatever,
+                        Str :$method = 'tiny',
+                        Bool:D :$echo
+                        ) {
 
     #------------------------------------------------------
     # Process $format
@@ -160,10 +172,10 @@ multi sub llama-request(Str :$url!,
             curl-post(:$url, :$body, :$auth-key, :$timeout);
         }
         when 'tiny' && !(so $body) {
-            tiny-get(:$url, :$auth-key, :$timeout);
+            tiny-get(:$url, :$auth-key, :$timeout, :$echo);
         }
         when 'tiny' {
-            tiny-post(:$url, :$body, :$auth-key, :$timeout);
+            tiny-post(:$url, :$body, :$auth-key, :$timeout, :$echo);
         }
         default {
             die 'Unknown method.'

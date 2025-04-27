@@ -16,7 +16,8 @@ our proto LLaMATokenizing($prompt,
                           :$format is copy = Whatever,
                           :api-key(:$auth-key) is copy = Whatever,
                           Str :$method = 'tiny',
-                          Str :$base-url = 'http://127.0.0.1:8080'
+                          Str :$base-url = 'http://127.0.0.1:8080',
+                          Bool:D :$echo = False
                           ) is export {*}
 
 
@@ -27,7 +28,8 @@ multi sub LLaMATokenizing($prompt,
                           :$format is copy = Whatever,
                           :api-key(:$auth-key) is copy = Whatever,
                           Str :$method = 'tiny',
-                          Str :$base-url = 'http://127.0.0.1:8080') {
+                          Str :$base-url = 'http://127.0.0.1:8080',
+                          Bool:D :$echo = False) {
 
     #------------------------------------------------------
     # Process $type
@@ -51,12 +53,12 @@ multi sub LLaMATokenizing($prompt,
 
         return llama-request(:$url,
                 body => to-json(%( Pair.new($option, $prompt) )),
-                :$auth-key, :$timeout, :$format, :$method);
+                :$auth-key, :$timeout, :$format, :$method, :$echo);
 
     } else {
 
         return llama-request(:$url,
                 body => to-json(%( Pair.new($option, $prompt) )),
-                :$auth-key, :$timeout, :$format, :$method);
+                :$auth-key, :$timeout, :$format, :$method, :$echo);
     }
 }

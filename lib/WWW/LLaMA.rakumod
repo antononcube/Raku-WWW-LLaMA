@@ -44,6 +44,7 @@ multi sub llama-base-url(-->Str) {
 #| C<:$format> -- format to use in answers post processing, one of <values json hash asis>);
 #| C<:$method> -- method to WWW API call with, one of <curl tiny>.
 #| C<:$base-url> -- URL of the LLaMA server.
+#| C<:$echo> -- Whether to echo or not responses and constructed URLs.
 sub llama-completion(**@args, *%args) is export {
    return llama-chat-completion(|@args, |%args);
 }
@@ -62,6 +63,7 @@ sub llama-completion(**@args, *%args) is export {
 #| C<:$format> -- format to use in answers post processing, one of <values json hash asis>);
 #| C<:$method> -- method to WWW API call with, one of <curl tiny>.
 #| C<:$base-url> -- URL of the LLaMA server.
+#| C<:$echo> -- Whether to echo or not responses and constructed URLs.
 our proto llama-text-completion(|) is export {*}
 
 multi sub llama-text-completion(**@args, *%args) {
@@ -82,6 +84,7 @@ multi sub llama-text-completion(**@args, *%args) {
 #| C<:$format> -- format to use in answers post processing, one of <values json hash asis>);
 #| C<:$method> -- method to WWW API call with, one of <curl tiny>.
 #| C<:$base-url> -- URL of the LLaMA server.
+#| C<:$echo> -- Whether to echo or not responses and constructed URLs.
 our proto llama-code-infill(|) is export {*}
 
 multi sub llama-code-infill(*%args) {
@@ -106,6 +109,7 @@ multi sub llama-code-infill(*%args) {
 #| C<:$format> -- format to use in answers post processing, one of <values json hash asis>);
 #| C<:$method> -- method to WWW API call with, one of <curl tiny>.
 #| C<:$base-url> -- URL of the LLaMA server.
+#| C<:$echo> -- Whether to echo or not responses and constructed URLs.
 our proto llama-chat-completion(|) is export {*}
 
 multi sub llama-chat-completion(**@args, *%args) {
@@ -123,6 +127,7 @@ multi sub llama-chat-completion(**@args, *%args) {
 #| C<:$format> -- format to use in answers post processing, one of <values json hash asis>);
 #| C<:$method> -- method to WWW API call with, one of <curl tiny>.
 #| C<:$base-url> -- URL of the LLaMA server.
+#| C<:$echo> -- Whether to echo or not responses and constructed URLs.
 our proto llama-embedding(|) is export {*}
 
 multi sub llama-embedding(**@args, *%args) {
@@ -137,6 +142,7 @@ multi sub llama-embedding(**@args, *%args) {
 #| C<:$timeout> -- timeout;
 #| C<:$method> -- method to WWW API call with, one of <curl tiny>.
 #| C<:$base-url> -- URL of the LLaMA server.
+#| C<:$echo> -- Whether to echo or not responses and constructed URLs.
 our proto llama-tokenize(|) is export {*}
 
 multi sub llama-tokenize(**@args, *%args) {
@@ -151,6 +157,7 @@ multi sub llama-tokenize(**@args, *%args) {
 #| C<:$timeout> -- timeout;
 #| C<:$method> -- method to WWW API call with, one of <curl tiny>.
 #| C<:$base-url> -- URL of the LLaMA server.
+#| C<:$echo> -- Whether to echo or not responses and constructed URLs.
 our proto llama-detokenize(|) is export {*}
 
 multi sub llama-detokenize(**@args, *%args) {
@@ -164,6 +171,7 @@ multi sub llama-detokenize(**@args, *%args) {
 #| C<:api-key($auth-key)> -- authorization key (API key);
 #| C<:$timeout> -- timeout.
 #| C<:$base-url> -- URL of the LLaMA server.
+#| C<:$echo> -- Whether to echo or not responses and constructed URLs.
 our proto llama-model(|) is export {*}
 
 multi sub llama-model(*%args) {
@@ -191,6 +199,7 @@ our proto llama-playground($text is copy = '',
                            :$format is copy = Whatever,
                            Str :$method = 'tiny',
                            Str :$base-url = llama-base-url,
+                           Bool:D :$echo = False,
                            *%args
                            ) is export {*}
 
@@ -207,6 +216,7 @@ multi sub llama-playground($text is copy,
                            :$format is copy = Whatever,
                            Str :$method = 'tiny',
                            Str :$base-url = llama-base-url,
+                           Bool:D :$echo = False,
                            *%args
                            ) {
 
@@ -215,7 +225,7 @@ multi sub llama-playground($text is copy,
     #------------------------------------------------------
 
     if ($text ~~ Iterable) && $path.lc ∉ <de-tokenizing detokenizing detokenize de-tokenize> {
-        return $text.map({ llama-playground($_, :$path, :$auth-key, :$timeout, :$format, :$method, :$base-url, |%args) });
+        return $text.map({ llama-playground($_, :$path, :$auth-key, :$timeout, :$format, :$method, :$base-url, :$echo, |%args) });
     }
 
     #------------------------------------------------------
@@ -225,14 +235,14 @@ multi sub llama-playground($text is copy,
 
     given $path.lc {
         when $_ ∈ <model models> {
-            return llama-model(:$auth-key, :$timeout, :$method, :$base-url);
+            return llama-model(:$auth-key, :$timeout, :$method, :$base-url, :$echo);
         }
         when $_ ∈ <chat chat/completion chat/completions> {
             # my $url = 'http://127.0.0.1:8080/v1/chat/completions';
             my $expectedKeys = <model prompt max-tokens temperature top-p stream echo random-seed>;
             return llama-chat-completion($text,
                     |%args.grep({ $_.key ∈ $expectedKeys }).Hash,
-                    :$auth-key, :$timeout, :$format, :$method, :$base-url);
+                    :$auth-key, :$timeout, :$format, :$method, :$base-url, :$echo);
         }
         when $_ ∈ <completion completions text/completion text/completions> {
             # my $url = 'https://127.0.0.1:8080/completion';
@@ -241,7 +251,7 @@ multi sub llama-playground($text is copy,
             $expectedKeys = $expectedKeys (-) $paramsForAll;
             return llama-text-completion($text,
                     |%args.grep({ $_.key ∈ $expectedKeys }).Hash,
-                    :$auth-key, :$timeout, :$format, :$method, :$base-url);
+                    :$auth-key, :$timeout, :$format, :$method, :$base-url, :$echo);
         }
         when $_ ∈ <infill code-infill> {
             # my $url = 'https://127.0.0.1:8080/infill';
@@ -250,23 +260,23 @@ multi sub llama-playground($text is copy,
             $expectedKeys = $expectedKeys (-) $paramsForAll;
             return llama-code-infill(
                     |%args.grep({ $_.key ∈ $expectedKeys }).Hash,
-                    :$auth-key, :$timeout, :$format, :$method, :$base-url);
+                    :$auth-key, :$timeout, :$format, :$method, :$base-url, :$echo);
         }
         when $_ ∈ <embedding embeddings> {
             # my $url = 'http://127.0.0.1:8080/embeddings';
             return llama-embedding($text,
                     |%args.grep({ $_.key ∈ <model encoding-format> }).Hash,
-                    :$auth-key, :$timeout, :$format, :$method, :$base-url);
+                    :$auth-key, :$timeout, :$format, :$method, :$base-url, :$echo);
         }
         when $_ ∈ <tokens tokenize tokenizing> {
             # my $url = 'http://127.0.0.1:8080/tokenize';
             return llama-tokenize($text,
-                    :$auth-key, :$timeout, :$format, :$method, :$base-url);
+                    :$auth-key, :$timeout, :$format, :$method, :$base-url, :$echo);
         }
         when $_ ∈ <de-tokenizing detokenizing detokenize de-tokenize> {
             # my $url = 'http://127.0.0.1:8080/detokenize';
             return llama-detokenize($text,
-                    :$auth-key, :$timeout, :$format, :$method, :$base-url);
+                    :$auth-key, :$timeout, :$format, :$method, :$base-url, :$echo);
         }
         default {
             die 'Do not know how to process the given path.';

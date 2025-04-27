@@ -70,7 +70,8 @@ our sub LLaMAModels(
         Str :$method = 'tiny',
         Str :$base-url = 'http://127.0.0.1:8080',
         :api-key(:$auth-key) is copy = Whatever,
-        UInt :$timeout = 10) is export {
+        UInt :$timeout = 10,
+        Bool:D :$echo = False) is export {
     #------------------------------------------------------
     # Process $auth-key
     #------------------------------------------------------
@@ -94,7 +95,7 @@ our sub LLaMAModels(
     my Str $url = $base-url ~ '/completion';
 
     my $body = to-json(%(prompt => 'So', n_predict => 1));
-    my $res = llama-request(:$url, :$body, :$auth-key, :$timeout, format => 'hash', :$method);
+    my $res = llama-request(:$url, :$body, :$auth-key, :$timeout, format => 'hash', :$method, :$echo);
 
     if $res ~~ Hash:D {
         return $res<generation_settings><model>;
