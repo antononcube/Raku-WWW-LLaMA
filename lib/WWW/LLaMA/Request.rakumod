@@ -14,6 +14,7 @@ multi sub tiny-post(Str :$url!,
                     Str :api-key(:$auth-key)!,
                     UInt :$timeout = 10,
                     Bool:D :$echo = False) {
+    note (:$body) if $echo;
     my $resp = HTTP::Tiny.post: $url,
             headers => { authorization => "Bearer $auth-key",
                          Content-Type => "application/json" },
@@ -28,6 +29,7 @@ multi sub tiny-post(Str :$url!,
                     Bool :$json = False,
                     UInt :$timeout = 10,
                     Bool:D :$echo = False) {
+    note (body => $body.raku) if $echo;
     if $json {
         return tiny-post(:$url, body => to-json($body), :$auth-key, :$timeout);
     }
