@@ -14,6 +14,7 @@ our proto LLaMAEmbeddings($prompt,
                           :@image-data = [],
                           :$model = Whatever,
                           :$encoding-format = Whatever,
+                          Bool:D :$array-content = True,
                           :api-key(:$auth-key) is copy = Whatever,
                           UInt :$timeout= 10,
                           :$format is copy = Whatever,
@@ -28,6 +29,7 @@ multi sub LLaMAEmbeddings($prompt,
                           :@image-data = [],
                           :$model is copy = Whatever,
                           :$encoding-format is copy = Whatever,
+                          Bool:D :$array-content = True,
                           :api-key(:$auth-key) is copy = Whatever,
                           UInt :$timeout= 10,
                           :$format is copy = Whatever,
@@ -54,7 +56,7 @@ multi sub LLaMAEmbeddings($prompt,
     # LLaMA URL
     #------------------------------------------------------
 
-    my %body = content => $prompt.Array;
+    my %body = content => $array-content ?? $prompt.Array !! $prompt;
     if @image-data {
        %body<image_data> = @image-data;
     }
