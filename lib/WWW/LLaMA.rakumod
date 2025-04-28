@@ -265,7 +265,7 @@ multi sub llama-playground($text is copy,
         when $_ ∈ <embedding embeddings> {
             # my $url = 'http://127.0.0.1:8080/embeddings';
             return llama-embedding($text,
-                    |%args.grep({ $_.key ∈ <model encoding-format> }).Hash,
+                    |%args.grep({ $_.key ∈ <model encoding-format array-content> }).Hash,
                     :$auth-key, :$timeout, :$format, :$method, :$base-url, :$echo);
         }
         when $_ ∈ <tokens tokenize tokenizing> {
