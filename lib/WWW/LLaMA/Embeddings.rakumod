@@ -14,7 +14,7 @@ our proto LLaMAEmbeddings($prompt,
                           :@image-data = [],
                           :$model = Whatever,
                           :$encoding-format = Whatever,
-                          Bool:D :$array-content = True,
+                          Bool:D :$batched = False,
                           :api-key(:$auth-key) is copy = Whatever,
                           UInt :$timeout= 10,
                           :$format is copy = Whatever,
@@ -23,13 +23,12 @@ our proto LLaMAEmbeddings($prompt,
                           Bool:D :$echo = False,
                           ) is export {*}
 
-
 #| LLaMA embeddings.
 multi sub LLaMAEmbeddings($prompt,
                           :@image-data = [],
                           :$model is copy = Whatever,
                           :$encoding-format is copy = Whatever,
-                          Bool:D :$array-content = True,
+                          Bool:D :$batched = False,
                           :api-key(:$auth-key) is copy = Whatever,
                           UInt :$timeout= 10,
                           :$format is copy = Whatever,
@@ -37,6 +36,12 @@ multi sub LLaMAEmbeddings($prompt,
                           Str :$base-url = 'http://127.0.0.1:8080',
                           Bool:D :$echo = False,
                           ) {
+
+    if !$batched && $prompt ~~ (Array | List | Seq) {
+        return $prompt.map({
+            LLaMAEmbeddings($_, :@image-data, :$model, :$encoding-format, :$batched, :$auth-key, :$timeout, :$format, :$method, :$base-url, :$echo)
+        })
+    }
 
     #------------------------------------------------------
     # Process $model
@@ -56,7 +61,13 @@ multi sub LLaMAEmbeddings($prompt,
     # LLaMA URL
     #------------------------------------------------------
 
-    my %body = content => $array-content ?? $prompt.Array !! $prompt;
+    # The option $batched is used for compatibility with &llm-embedding from "LLM::Functions".
+    # The default value of :$batched, False, is also for compatibility with &llm-embedding.
+    # The previous name of :$batched was :$array-content.
+    # That is an adapter option:
+    # - Some LLaMA models want the "content" key to be an array of strings
+    # - Some want it to be a string
+    my %body = content => $batched ?? $prompt.Array !! $prompt;
     if @image-data {
        %body<image_data> = @image-data;
     }
