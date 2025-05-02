@@ -63,6 +63,7 @@ sub llama-completion(**@args, *%args) is export {
 #| C<:$format> -- format to use in answers post processing, one of <values json hash asis>);
 #| C<:$method> -- method to WWW API call with, one of <curl tiny>.
 #| C<:$base-url> -- URL of the LLaMA server.
+#| C<:$path> -- Path for the text completions endpoint.
 #| C<:$echo> -- Whether to echo or not responses and constructed URLs.
 our proto llama-text-completion(|) is export {*}
 
@@ -109,6 +110,7 @@ multi sub llama-code-infill(*%args) {
 #| C<:$format> -- format to use in answers post processing, one of <values json hash asis>);
 #| C<:$method> -- method to WWW API call with, one of <curl tiny>.
 #| C<:$base-url> -- URL of the LLaMA server.
+#| C<:$path> -- Path for the chat completions endpoint.
 #| C<:$echo> -- Whether to echo or not responses and constructed URLs.
 our proto llama-chat-completion(|) is export {*}
 

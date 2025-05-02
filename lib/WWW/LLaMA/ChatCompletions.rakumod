@@ -31,8 +31,9 @@ our proto LLaMAChatCompletion($prompt is copy,
                               :api-key(:$auth-key) is copy = Whatever,
                               UInt :$timeout= 10,
                               :$format is copy = Whatever,
-                              Str :$method = 'tiny',
-                              Str :$base-url = 'http://127.0.0.1:8080',
+                              Str:D :$method = 'tiny',
+                              Str:D :$base-url = 'http://127.0.0.1:8080',
+                              Str:D :$path = 'v1/chat/completions',
                               Bool:D :$echo = False) is export {*}
 
 #| LLaMA completion access.
@@ -52,8 +53,9 @@ multi sub LLaMAChatCompletion(@prompts is copy,
                               :api-key(:$auth-key) is copy = Whatever,
                               UInt :$timeout= 10,
                               :$format is copy = Whatever,
-                              Str :$method = 'tiny',
-                              Str :$base-url = 'http://127.0.0.1:8080',
+                              Str:D :$method = 'tiny',
+                              Str:D :$base-url = 'http://127.0.0.1:8080',
+                              Str:D :$path = 'v1/chat/completions',
                               Bool:D :$echo = False) {
 
     #------------------------------------------------------
@@ -127,7 +129,7 @@ multi sub LLaMAChatCompletion(@prompts is copy,
         %body.push('random_seed' => $random-seed);
     }
 
-    my $url = $base-url ~ '/v1/chat/completions';
+    my $url = $base-url ~ '/' ~ $path;
 
     #------------------------------------------------------
     # Delegate

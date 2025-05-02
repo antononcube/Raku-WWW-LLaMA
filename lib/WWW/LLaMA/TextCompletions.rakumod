@@ -47,8 +47,9 @@ our proto LLaMATextCompletion($prompt is copy,
                               :$model is copy = Whatever,
                               UInt :$timeout= 10,
                               :$format is copy = Whatever,
-                              Str :$method = 'tiny',
-                              Str :$base-url = 'http://127.0.0.1:8080',
+                              Str:D :$method = 'tiny',
+                              Str:D :$base-url = 'http://127.0.0.1:8080',
+                              Str:D :$path = 'completion',
                               Bool:D :$echo = False) is export {*}
 
 #| LLaMA completion access.
@@ -92,8 +93,9 @@ multi sub LLaMATextCompletion($prompt is copy,
                               :$model is copy = Whatever,
                               UInt :$timeout= 10,
                               :$format is copy = Whatever,
-                              Str :$method = 'tiny',
-                              Str :$base-url = 'http://127.0.0.1:8080',
+                              Str:D :$method = 'tiny',
+                              Str:D :$base-url = 'http://127.0.0.1:8080',
+                              Str:D :$path = 'completion',
                               Bool:D :$echo = False) {
 
     #------------------------------------------------------
@@ -241,7 +243,7 @@ multi sub LLaMATextCompletion($prompt is copy,
         %body = %body.grep({ $_.key ∉ <stream prompt> });
         $url = $base-url ~ '/infill';
     } else {
-        $url = $base-url ~ '/completion';
+        $url = $base-url ~ '/' ~ $path;
     }
 
 
