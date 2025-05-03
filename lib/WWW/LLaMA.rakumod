@@ -39,6 +39,8 @@ multi sub llama-base-url(-->Str) {
 #| C<:$max-tokens> -- max number of tokens of the results;
 #| C<:$top-p> -- top probability of tokens to use in the answer;
 #| C<:$stream> -- whether to stream the result or not;
+#| C<:$random-seed> -- random seed for the generation;
+#| C<:@tools> -- function calling specs (i.e. "tools");
 #| C<:api-key($auth-key)> -- authorization key (API key);
 #| C<:$timeout> -- timeout;
 #| C<:$format> -- format to use in answers post processing, one of <values json hash asis>);

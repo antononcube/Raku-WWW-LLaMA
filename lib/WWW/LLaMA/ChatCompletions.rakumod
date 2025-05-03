@@ -28,6 +28,7 @@ our proto LLaMAChatCompletion($prompt is copy,
                               Numeric :$top-p = 1,
                               Bool :$stream = False,
                               :$random-seed is copy = Whatever,
+                              :@tools = Empty,
                               :api-key(:$auth-key) is copy = Whatever,
                               UInt :$timeout= 10,
                               :$format is copy = Whatever,
@@ -50,6 +51,7 @@ multi sub LLaMAChatCompletion(@prompts is copy,
                               Numeric :$top-p = 1,
                               Bool :$stream = False,
                               :$random-seed is copy = Whatever,
+                              :@tools = Empty,
                               :api-key(:$auth-key) is copy = Whatever,
                               UInt :$timeout= 10,
                               :$format is copy = Whatever,
@@ -127,6 +129,11 @@ multi sub LLaMAChatCompletion(@prompts is copy,
 
     if $random-seed ~~ Int:D {
         %body.push('random_seed' => $random-seed);
+    }
+
+    # Add tools with caution
+    if @tools {
+        %body = %body , {:@tools};
     }
 
     my $url = $base-url ~ '/' ~ $path;
