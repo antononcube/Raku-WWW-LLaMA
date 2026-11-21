@@ -290,6 +290,50 @@ llama-chat-completion([ system => $preEmojify, user => 'Python sucks, Raku rocks
 # Python 😕, Raku 😍, and Perl 🙄
 ```
 
+
+-------
+
+# Apple's Foundation Models
+
+The models "system" and "pcc" are recognized by "WWW::LLaMA" in order to utilize Apple's [Foundation Models](https://developer.apple.com/documentation/foundationmodels).
+
+In macOS 27+ run Apple's built-in Foundation Model (FM) with the command:
+
+```sh
+fm serve
+```
+
+Which will give the output:
+
+```text
+Foundation Models Serve
+  url    http://127.0.0.1:1976
+  access loopback-only
+
+  · POST /v1/chat/completions
+  · GET  /v1/models
+  · GET  /health
+```
+
+Alternatively, start with a custom port / host:
+
+```sh
+fm serve --port 1976
+fm serve --host 127.0.0.1 --port 1976
+```
+
+Then use `llama-playground` invocations like:
+
+```raku
+'How many people live in North Korea?'
+==> llama-playground( path => 'chat/completion', model => 'system', format => 'values', base-url => 'http://127.0.0.1:1976');
+```
+```
+# About 25 million people live in North Korea.
+```
+
+For more details and elaborated examples see the notebook ["Apple-Foundation-Models-usage-examples.ipynb"](./docs/Apple-Foundation-Models-usage-examples.ipynb).
+
 -------
 
 ## Command Line Interface
@@ -367,7 +411,7 @@ graph TD
 
 [AAp1] Anton Antonov,
 [WWW::OpenAI Raku package](https://github.com/antononcube/Raku-WWW-OpenAI),
-(2023-2024),
+(2023-2026),
 [GitHub/antononcube](https://github.com/antononcube).
 
 [AAp2] Anton Antonov,
@@ -377,17 +421,17 @@ graph TD
 
 [AAp3] Anton Antonov,
 [LLM::Functions Raku package](https://github.com/antononcube/Raku-LLM-Functions),
-(2023-2024),
+(2023-2026),
 [GitHub/antononcube](https://github.com/antononcube).
 
 [AAp4] Anton Antonov,
 [LLM::Prompts Raku package](https://github.com/antononcube/Raku-LLM-Prompts),
-(2023-2024),
+(2023-2026),
 [GitHub/antononcube](https://github.com/antononcube).
 
 [AAp5] Anton Antonov,
 [Jupyter::Chatbook Raku package](https://github.com/antononcube/Raku-Jupyter-Chatbook),
-(2023),
+(2023-2026),
 [GitHub/antononcube](https://github.com/antononcube).
 
 [MO1] Mozilla Ocho, [llamafile](https://github.com/mozilla-Ocho/llamafile).
