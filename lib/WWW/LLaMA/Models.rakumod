@@ -10,7 +10,7 @@ use WWW::LLaMA::Request;
 #============================================================
 # See : https://github.com/Mozilla-Ocho/llamafile/blob/main/llama.cpp/server/README.md#api-endpoints
 
-my $knownModels = Set.new(<llama-embedding gpt-3.5-turbo llamafile llama llava>);
+my $knownModels = SetHash.new(<llama-embedding gpt-3.5-turbo llamafile llama llava>);
 
 
 our sub llama-known-models() is export {
