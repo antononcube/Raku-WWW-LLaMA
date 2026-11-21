@@ -9,8 +9,9 @@ use WWW::LLaMA::Request;
 # Known models
 #============================================================
 # See : https://github.com/Mozilla-Ocho/llamafile/blob/main/llama.cpp/server/README.md#api-endpoints
+# The model names "system" and "pcc" are added in order to use Apple's Foundation models via this package.
 
-my $knownModels = SetHash.new(<llama-embedding gpt-3.5-turbo llamafile llama llava>);
+my $knownModels = SetHash.new(<llama-embedding gpt-3.5-turbo llamafile llama llava system pcc>);
 
 
 our sub llama-known-models() is export {
@@ -25,7 +26,7 @@ our sub llama-known-models() is export {
 
 my %endPointToModels =
         'embeddings' => <llama-embedding gpt-3.5-turbo>,
-        'chat/completions' => <gpt-3.5-turbo llamafile llama llava>;
+        'chat/completions' => <gpt-3.5-turbo llamafile llama llava system pcc>;
 
 #| End-point to models retrieval.
 proto sub llama-end-point-to-models(|) is export {*}
