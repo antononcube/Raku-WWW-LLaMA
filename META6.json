@@ -1,44 +1,41 @@
 {
-  "name": "WWW::LLaMA",
-  "description": "WWW::LLaMA provides access to the LLaMA playground.",
-  "version": "0.1.4",
-  "perl": "6.d",
-  "authors": [
-    "Anton Antonov"
-  ],
-  "auth": "zef:antononcube",
-  "depends": [
-    "HTTP::Tiny:ver<0.2.5+>",
-    "JSON::Fast:ver<0.17+>",
-    "IO::Socket::SSL:ver<0.0.2+>"
-  ],
-  "build-depends": [],
-  "test-depends": [],
-  "provides": {
-    "WWW::LLaMA": "lib/WWW/LLaMA.rakumod",
-    "WWW::LLaMA::ChatCompletions": "lib/WWW/LLaMA/ChatCompletions.rakumod",
-    "WWW::LLaMA::Embeddings": "lib/WWW/LLaMA/Embeddings.rakumod",
-    "WWW::LLaMA::Models": "lib/WWW/LLaMA/Models.rakumod",
-    "WWW::LLaMA::Request": "lib/WWW/LLaMA/Request.rakumod",
-    "WWW::LLaMA::TextCompletions": "lib/WWW/LLaMA/TextCompletions.rakumod",
-    "WWW::LLaMA::Tokenizing": "lib/WWW/LLaMA/Tokenizing.rakumod"
-  },
-  "resources": [],
-  "license": "Artistic-2.0",
-  "tags": [
-    "ai",
-    "api",
-    "art",
-    "embeddings",
-    "generative art",
-    "generative",
-    "large language model",
-    "llm",
-    "llama",
-    "llamafile",
-    "web service",
-    "web"
-  ],
-  "api": "1",
-  "source-url": "https://github.com/antononcube/Raku-WWW-LLaMA"
+    "name": "WWW::LLaMA",
+    "description": "WWW::LLaMA provides access to the LLaMA playground.",
+    "version": "0.1.5",
+    "authors": [
+        "Anton Antonov"
+    ],
+    "auth": "zef:antononcube",
+    "depends": [
+        "HTTP::Tiny:ver<0.2.5+>",
+        "JSON::Fast:ver<0.17+>",
+        "IO::Socket::SSL:ver<0.0.2+>"
+    ],
+    "build-depends": [],
+    "provides": {
+        "WWW::LLaMA": "lib/WWW/LLaMA.rakumod",
+        "WWW::LLaMA::ChatCompletions": "lib/WWW/LLaMA/ChatCompletions.rakumod",
+        "WWW::LLaMA::Embeddings": "lib/WWW/LLaMA/Embeddings.rakumod",
+        "WWW::LLaMA::Models": "lib/WWW/LLaMA/Models.rakumod",
+        "WWW::LLaMA::Request": "lib/WWW/LLaMA/Request.rakumod",
+        "WWW::LLaMA::TextCompletions": "lib/WWW/LLaMA/TextCompletions.rakumod",
+        "WWW::LLaMA::Tokenizing": "lib/WWW/LLaMA/Tokenizing.rakumod"
+    },
+    "license": "Artistic-2.0",
+    "tags": [
+        "ai",
+        "api",
+        "art",
+        "embeddings",
+        "generative art",
+        "generative",
+        "large language model",
+        "llm",
+        "llama",
+        "llamafile",
+        "web service",
+        "web"
+    ],
+    "api": "1",
+    "source-url": "https://github.com/antononcube/Raku-WWW-LLaMA"
 }
